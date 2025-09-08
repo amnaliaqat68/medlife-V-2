@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import SummaryPage from "../nationalSummary/page";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,8 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-const  Filterpage = () => {
+// ✅ Inner component that uses useSearchParams
+function FilterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -16,6 +18,7 @@ const  Filterpage = () => {
   const startDate = searchParams.get("startDate") || "";
   const endDate = searchParams.get("endDate") || "";
   const name = searchParams.get("name") || "";
+
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -65,15 +68,15 @@ const  Filterpage = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "CSR Report");
     XLSX.writeFile(workbook, "CSR_Report.xlsx");
   };
+
   const logo = "/Medlife logo.png";
+
   // ✅ Export to PDF
   const exportToPDF = () => {
     if (!reports.length) return;
 
     const doc = new jsPDF();
-
     doc.addImage(logo, "PNG", 10, 2, 25, 15);
-
     doc.setFontSize(12);
     doc.text("CSR Summary Report", 70, 15);
 
@@ -119,7 +122,6 @@ const  Filterpage = () => {
         : "N/A",
     ]);
 
-    // ✅ use autoTable
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
@@ -152,12 +154,11 @@ const  Filterpage = () => {
       setLoading(false);
     };
 
-    // Always fetch data, even if no filters are applied
     fetchFilteredReports();
   }, [district, startDate, endDate, name]);
 
   return (
-    <div className="">
+    <div>
       <header className="flex items-center justify-between w-full px-6 py-4 bg-white shadow-md sticky top-0 z-50 border-b border-gray-200">
         {/* Left: Logo + Brand */}
         <div className="flex items-center space-x-3">
@@ -215,5 +216,12 @@ const  Filterpage = () => {
     </div>
   );
 }
-export default Filterpage;
 
+// ✅ Wrap with Suspense here
+export default function Filterpage() {
+  return (
+    <Suspense fallback={<p>Loading filters...</p>}>
+      <FilterContent />
+    </Suspense>
+  );
+}

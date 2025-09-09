@@ -37,6 +37,37 @@ const DecisionPage = () => {
   }, []);
 
   // ✅ Decision Handler
+  // const handleDecision = async (csrId, status) => {
+  //   try {
+  //     setApprovingCSR(csrId);
+
+  //     const res = await fetch("/api/csrInfo/updateCSR", {
+  //       method: "PATCH",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ csrId, role: userRole, status }),
+  //     });
+
+  //     const updated = await res.json();
+  //     if (!res.ok) {
+  //       toast.error(updated.message || "Failed to update CSR");
+  //       return;
+  //     }
+
+  //     toast.success(updated.message);
+
+  //     if (status === "approved") {
+  //       setApprovedCSRIds((prev) => [...prev, csrId]);
+  //     } else if (status === "rejected") {
+  //       setCsrList((prevList) => prevList.filter((csr) => csr._id !== csrId));
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating CSR:", error);
+  //     toast.error("An error occurred. Try again.");
+  //   } finally {
+  //     setApprovingCSR(null);
+  //   }
+  // };
+
   const handleDecision = async (csrId, status) => {
     try {
       setApprovingCSR(csrId);
@@ -55,6 +86,13 @@ const DecisionPage = () => {
 
       toast.success(updated.message);
 
+      // ✅ Update csrList state so UI reflects new status
+      setCsrList((prevList) =>
+        prevList.map((csr) =>
+          csr._id === csrId ? { ...csr, [`${userRole}Status`]: status } : csr
+        )
+      );
+
       if (status === "approved") {
         setApprovedCSRIds((prev) => [...prev, csrId]);
       } else if (status === "rejected") {
@@ -68,7 +106,6 @@ const DecisionPage = () => {
     }
   };
 
-  
   useEffect(() => {
     const fetchCSR = async () => {
       let endpoint = "";
@@ -157,7 +194,26 @@ const DecisionPage = () => {
 
                           {/* Actions */}
                           <div className="flex flex-wrap gap-2 mt-auto">
-                            {approvedCSRIds.includes(csr._id) ? (
+                            {/* {approvedCSRIds.includes(csr._id) ? (
+                              <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
+                                ✅ Approved
+                              </span>
+                            ) : (
+                              <Button
+                                size="sm"
+                                disabled={approvingCSR === csr._id}
+                                onClick={() =>
+                                  handleDecision(csr._id, "approved")
+                                }
+                                className="bg-green-600 hover:bg-green-700 text-black rounded-md"
+                              >
+                                {approvingCSR === csr._id
+                                  ? "Approving..."
+                                  : "Approve"}
+                              </Button>
+                            )} */}
+
+                            {csr[`${userRole}Status`] === "approved" ? (
                               <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
                                 ✅ Approved
                               </span>

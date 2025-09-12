@@ -14,11 +14,11 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "MedCSR",
   description: "Digitizing CSR Workflows with MedCSR",
-  manifest: "/manifest.json",
-  icons: {
-    icon: "/Medlife-logo-192x192.png",
-    apple: "/Medlife-logo-192x192.png",
-  },
+  // manifest: "/manifest.json",
+  // icons: {
+  //   icon: "/Medlife-logo-192x192.png",
+  //   apple: "/Medlife-logo-192x192.png",
+  // },
 };
 export const viewport = {
   themeColor: "#4f46e5",

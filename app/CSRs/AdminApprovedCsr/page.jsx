@@ -163,7 +163,7 @@ const Approvedpage = () => {
                       variant="default"
                       onClick={() => {
                         console.log("Navigating to:", csr._id);
-                        router.push(`/Uni/executeForm/${csr._id}`);
+                        router.push(`/CSRs/executeForm/${csr._id}`);
                       }}
                       className="bg-green-500 hover:bg-blue-700 text-white"
                     >

@@ -30,7 +30,7 @@ export default function HomePage() {
         if (
           ["superAdmin", "admin", "sm", "gm", "dsm"].includes(data.user.role)
         ) {
-          router.push("/Uni/dashboard"); // ✅ one dashboard for all roles
+          router.push("/dashboard"); // ✅ one dashboard for all roles
         } else {
           setError("Unknown role. Please contact support.");
         }
@@ -59,14 +59,14 @@ export default function HomePage() {
             MedLife
           </h1>
         </div>
-        <div className="flex items-center gap-4">
+        {/* <div className="flex items-center gap-4">
           <Link
             href="/landing-page/signup"
             className="hidden sm:inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg font-medium shadow-md transition-all"
           >
             Sign Up
           </Link>
-        </div>
+        </div> */}
       </header>
 
       {/* Hero + Login */}
@@ -135,12 +135,12 @@ export default function HomePage() {
             </button>
           </form>
           <p className="text-center text-sm text-gray-600 mt-5">
-            New user?{" "}
+           
             <Link
-              href="/landing-page/signup"
+              href="/ForgotP"
               className="text-teal-500 hover:text-teal-600 font-semibold"
             >
-              Sign Up
+              Forget Password?{" "}
             </Link>
           </p>
         </div>

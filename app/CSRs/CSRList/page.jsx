@@ -72,7 +72,6 @@ const CSRList = () => {
     const name = csr.doctorId?.name?.toLowerCase() || "";
     const matchesSearch =
       !searchTerm || name.includes(searchTerm.toLowerCase());
-
     const overallStatus = getOverallStatus(csr);
     const matchesStatus =
       statusFilter === "all" || overallStatus === statusFilter;
@@ -91,15 +90,15 @@ const CSRList = () => {
     }
 
     if (smStatus === "approved" && gmStatus === "approved") {
-      return "Waitning for the admin approval";
+      return "pending";
     }
 
     return "Pending";
   }
 
   return (
-    <div className="space-y-6">
-      <div className="relative bg-blue-900 rounded-2xl p-4 mb-4 shadow flex items-center justify-evenly overflow-hidden">
+    <div className="space-y-2">
+      <div className="relative bg-blue-900 rounded-2xl p-2 mb-4 shadow flex items-center justify-evenly overflow-hidden">
         <div className="relative z-10 text-white max-w-md ">
           <h2 className="text-2xl font-bold mb-2">
             CUSTOMER SERVICE REQUEST DATA
@@ -131,25 +130,25 @@ const CSRList = () => {
             <Table className="w-full border rounded-lg shadow-sm">
               <TableHeader className="bg-gray-50">
                 <TableRow>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3">
-                    CSR #
+                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2">
+                    #
                   </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3">
+                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2">
                     Doctor
                   </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3">
+                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2">
                     District
                   </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3">
+                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2">
                     Medicine
                   </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3">
+                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2">
                     Active Cost
                   </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3">
+                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2">
                     Status
                   </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 text-center">
+                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2 text-center">
                     View
                   </TableHead>
                 </TableRow>
@@ -164,13 +163,13 @@ const CSRList = () => {
                     } hover:bg-indigo-50`}
                   >
                     {/* Doctor */}
-                    <TableCell className="px-4 py-3 text-[12px]">
+                    <TableCell className="px-2 py-1 text-[10px]">
                       <p className="font-medium text-sm text-gray-800">
                         {csr.Number || `${idx + 1}`}
                       </p>
                     </TableCell>
-                    <TableCell className="px-4 py-3">
-                      <p className="font-medium text-[12px] text-gray-800">
+                    <TableCell className="px-4 py-1">
+                      <p className="font-medium text-[10px] text-gray-800">
                         {csr.doctorId?.name || "N/A"}
                       </p>
                       <p className="text-xs text-gray-500">
@@ -179,18 +178,18 @@ const CSRList = () => {
                     </TableCell>
 
                     {/* District */}
-                    <TableCell className="px-4 py-3 text-[12px] text-gray-700">
+                    <TableCell className="px-2 py-1 text-[10px] text-gray-700">
                       {csr.doctorId?.district || "N/A"}
                     </TableCell>
 
                     {/* Medicine */}
-                    <TableCell className="px-4 py-3 text-[12px] text-gray-700 whitespace-normal break-words max-w-xs">
+                    <TableCell className="px-2 py-1 text-[10px] text-gray-700 whitespace-normal ">
                       {csr.products?.length > 0 ? (
                         <div className="space-y-1">
                           {csr.products.map((product, index) => (
                             <span
                               key={index}
-                              className="inline-block text-black text-[12px] font-medium  py-1 rounded-md mr-1 mb-1"
+                              className="inline-block text-black text-[10px] font-small  py-1 rounded-md mr-1 mb-1"
                             >
                               {product.product}
                             </span>
@@ -202,21 +201,21 @@ const CSRList = () => {
                     </TableCell>
 
                     {/* Active Cost */}
-                    <TableCell className="px-4 py-3 text-[12px] text-gray-700">
+                    <TableCell className="px-2 py-2 text-[10px] text-gray-700">
                       {csr.Business?.[0]?.exactCost
                         ? `${csr.Business[0].exactCost}`
                         : "N/A"}
                     </TableCell>
 
                     {/* Status */}
-                    <TableCell className="px-4 py-3 text-[12px]">
+                    <TableCell className="px-2 py-1 text-[10px]">
                       <span
-                        className={`px-2 py-1 rounded-full  font-medium
+                        className={`px-2 py-1 rounded-full font-medium
               ${
                 getOverallStatus(csr) === "Approved"
                   ? "bg-green-100 text-green-700"
                   : getOverallStatus(csr) === "Pending"
-                  ? "bg-yellow-100 text-yellow-700"
+                  ? "bg-100 text-yellow-700"
                   : "bg-red-100 text-red-700"
               }`}
                       >

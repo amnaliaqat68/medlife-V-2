@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   FileText,
   Users,
@@ -11,32 +12,31 @@ import {
   PlusCircle,
   Clock,
 } from "lucide-react";
+import { Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useRouter, usePathname } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "react-toastify";
-import CSRList from "../CSRList/page";
-import DoctorManagement from "../doctormanagement/page";
-import Descionpage from "../DescionForCsr/page";
-import Createuserpage from "../CreateUsers/page";
-import Completedpage from "../AdminCompletedCsr/page";
-import Approvedpage from "../Admin/page";
-import Reportpage from "../Reports/page";
-
+import CSRList from "../CSRs/CSRList/page";
+import DoctorManagement from "../DoctorsManage/page";
+import DecisionPage from "../CSRs/DescionForCsr/page";
+import Createuserpage from "../Users/CreateUsers/page";
+import Completedpage from "../CSRs/AdminCompletedCsr/page";
+import Approvedpage from "../CSRs/AdminApprovedCsr/page";
+import Reportpage from "../FilterReport/Reports/page";
+import ProfileSettings from "../Profile/page";
 
 const UniDashboardpage = () => {
+  const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [role, setRole] = useState("");
+  const [completed, setCompleted] = useState([]);
+  const [pending, setPending] = useState([]);
   const [totalCSR, setTotalCSR] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
   const [activePage, setActivePage] = useState("overview");
-  const [stats, setStats] = useState({
-    totalCSR: 0,
-    completedThisMonth: 0,
-    totalDoctors: 0,
-  });
 
   const router = useRouter();
   const pathname = usePathname();
@@ -59,6 +59,22 @@ const UniDashboardpage = () => {
       toast.error("An error occurred during logout.");
     }
   };
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const res = await fetch("/api/csrInfo/getreportsCSR", {
+          credentials: "include",
+        });
+
+        const data = await res.json();
+        console.log("Fetched CSR Reports:", data);
+        setCompleted(data);
+      } catch (err) {
+        console.error("Fetch failed", err);
+      }
+    };
+    fetchReports();
+  }, []);
 
   // Fetch CSRs
   useEffect(() => {
@@ -77,6 +93,18 @@ const UniDashboardpage = () => {
       const res = await fetch(endpoint);
       const data = await res.json();
       setTotalCSR(data);
+      console.log(
+        "CSR data:",
+        data.map((csr) => csr.adminStatus)
+      );
+
+      const pendingCSR = data.filter((csr) => {
+        if (role === "sm") return csr.smStatus === "pending";
+         if (role === "gm") return csr.gmStatus === "pending";
+        if (role === "admin") return csr.adminStatus === "pending";
+        return false;
+      });
+      setPending(pendingCSR);
     };
 
     if (role) {
@@ -130,7 +158,7 @@ const UniDashboardpage = () => {
         <div className="p-6 border-b">
           <div className="bg-gray-50 rounded-xl p-4 text-center">
             <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center">
-              <User className="w-7 h-7 text-blue-500" />
+              <img src="/profile.png" alt="" />
             </div>
             <h2 className="mt-3 font-semibold text-gray-800">
               {user ? user.name : "Loading..."}
@@ -190,7 +218,7 @@ const UniDashboardpage = () => {
           {/* Role-specific navigation */}
           {role === "dsm" && (
             <button
-              onClick={() => router.push("/Uni/CreatedCSR")}
+              onClick={() => router.push("/CRSs/CreatedCSR")}
               className="flex items-center gap-3 w-full px-4 py-2 rounded-lg hover:bg-indigo-50 text-gray-700 font-bold"
             >
               <PlusCircle className="w-5 h-5" /> Create CSR
@@ -246,7 +274,7 @@ const UniDashboardpage = () => {
               <FileText className="w-5 h-5" /> Completed CSR
             </button>
           )}
-           {role === "admin" && (
+          {role === "admin" && (
             <button
               onClick={() => setActivePage("reports")}
               className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg ${
@@ -273,6 +301,32 @@ const UniDashboardpage = () => {
 
           {/* Admin/GM extra option */}
         </nav>
+        {/* Setting */}
+        <div className="p-6 border-t">
+          <button
+            className="flex items-center gap-3 w-full px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200"
+            onClick={() => setOpen(!open)}
+          >
+            <Settings className="w-4 h-4" /> Setting
+          </button>
+
+          {/* Expandable Profile Preview */}
+          {open && (
+            <div className="mt-2 p-4 bg-gray-50 border rounded-lg shadow-sm">
+              <h3 className="font-medium text-gray-700 mb-2">
+                Profile Preview
+              </h3>
+
+              {/* Navigate to full profile page */}
+              <button
+                onClick={() => router.push("/Profile")}
+                className="mt-3 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                Set Profile
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Logout */}
         <div className="p-6 border-t">
@@ -290,7 +344,7 @@ const UniDashboardpage = () => {
         {activePage === "overview" && (
           <>
             {/* Welcome Banner */}
-            <div className="relative bg-blue-900 rounded-2xl p-6 mb-8 shadow flex items-center justify-evenly overflow-hidden">
+            <div className="relative bg-blue-900 rounded-2xl p-6 mb-4 shadow flex items-center justify-evenly overflow-hidden">
               <div className="absolute left-2 bottom-0 w-40 h-40">
                 <img
                   src="/Medlife logo.png"
@@ -336,7 +390,7 @@ const UniDashboardpage = () => {
                 <CardContent className="p-5 flex justify-between items-center">
                   <div>
                     <p className="text-sm text-gray-500">Pending Approval</p>
-                    <p className="text-2xl font-bold">1</p>
+                    <p className="text-2xl font-bold">{pending.length}</p>
                   </div>
                   <div className="p-3 bg-yellow-100 rounded-lg">
                     <Clock className="w-6 h-6 text-yellow-600" />
@@ -348,9 +402,7 @@ const UniDashboardpage = () => {
                 <CardContent className="p-5 flex justify-between items-center">
                   <div>
                     <p className="text-sm text-gray-500">Completed CSR</p>
-                    <p className="text-2xl font-bold">
-                      {stats.completedThisMonth}
-                    </p>
+                    <p className="text-2xl font-bold">{completed.length}</p>
                   </div>
                   <div className="p-3 bg-green-100 rounded-lg">
                     <CheckCircle className="w-6 h-6 text-green-600" />

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useReactToPrint } from "react-to-print";
 import { CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import CSRList from "../CSRList/page";
+import CSRList from "@/app/CSRs/CSRList/page";
 
 const SummaryPage = ({ data = [] }) => {
   const [visibleRows, setVisibleRows] = useState(500);

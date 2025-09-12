@@ -13,6 +13,7 @@ import {
   Clock,
 } from "lucide-react";
 import { Settings } from "lucide-react";
+import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useRouter, usePathname } from "next/navigation";
@@ -26,6 +27,7 @@ import Completedpage from "../CSRs/AdminCompletedCsr/page";
 import Approvedpage from "../CSRs/AdminApprovedCsr/page";
 import Reportpage from "../FilterReport/Reports/page";
 import ProfileSettings from "../Profile/page";
+import CSRForm from "../CSRs/CreatedCSR/page";
 
 const UniDashboardpage = () => {
   const [open, setOpen] = useState(false);
@@ -37,9 +39,17 @@ const UniDashboardpage = () => {
   const [doctors, setDoctors] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
   const [activePage, setActivePage] = useState("overview");
-
   const router = useRouter();
   const pathname = usePathname();
+  const logos = [
+  { src: "/Medlife logo.png", alt: "Bayer", className: "top-70 left-1/4" },
+  { src: "/Medlife logo.png", alt: "GSK", className: "top-70 right-1/4" },
+  { src: "/Medlife logo.png", alt: "Biogen", className: "top-90 left-1/2" },
+  { src: "/Medlife logo.png", alt: "ANI Pharma", className: "top-110 left-1/3" },
+  { src: "/Medlife logo.png", alt: "Syneos Health", className: "top-150 left-1/4" },
+  { src: "/Medlife logo.png", alt: "Pfizer", className: "top-120 right-1/6" },
+  { src: "/Medlife logo.png", alt: "Syneos Health", className: "top-150 right-1/3" },
+];
 
   // Logout handler
   const handleLogout = async () => {
@@ -100,7 +110,7 @@ const UniDashboardpage = () => {
 
       const pendingCSR = data.filter((csr) => {
         if (role === "sm") return csr.smStatus === "pending";
-         if (role === "gm") return csr.gmStatus === "pending";
+        if (role === "gm") return csr.gmStatus === "pending";
         if (role === "admin") return csr.adminStatus === "pending";
         return false;
       });
@@ -111,6 +121,24 @@ const UniDashboardpage = () => {
       fetchCSR();
     }
   }, [role]);
+
+  useEffect(() => {
+    const fetchCSR = async () => {
+      try {
+        const res = await fetch("/api/csrInfo/getCSR");
+        if (!res.ok) throw new Error("Failed to fetch CSR data");
+        const data = await res.json();
+        setTotalCSR(data);
+        setPending(data.filter((csr) => csr.smStatus === "pending"));
+        setPending(data.filter((csr) => csr.gmStatus === "pending"));
+        setPending(data.filter((csr) => csr.adminStatus === "pending"));
+      } catch (err) {
+        console.error("Error fetching CSR:", err);
+      }
+    };
+
+    fetchCSR();
+  }, []);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -141,12 +169,26 @@ const UniDashboardpage = () => {
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-indigo-50 via-white to-teal-50 ">
-      {/* Sidebar */}
-      <aside className="w-72 bg-white border-r shadow-sm flex flex-col">
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-6 py-6 border-b">
+      {logos.map((logo, i) => (
+        <div
+          key={i}
+          className={`absolute opacity-70 hover:opacity-100 transition ${logo.className}`}
+        >
           <img
-            src="/Medlife logo.png"
+            src={logo.src}
+            alt={logo.alt}
+            width={120}
+            height={60}
+            className="object-contain"
+          />
+        </div>
+      ))}
+      {/* Sidebar */}
+      <aside className="w-60 bg-white border-r shadow-sm flex flex-col">
+        {/* Logo */}
+        <div className="flex items-center gap-3 px-6 py-6 ">
+          <img
+            src="/chatgpt.png"
             alt="logo"
             width={50}
             className="transition-transform hover:scale-105"
@@ -155,8 +197,8 @@ const UniDashboardpage = () => {
         </div>
 
         {/* Profile Card */}
-        <div className="p-6 border-b">
-          <div className="bg-gray-50 rounded-xl p-4 text-center">
+        <div className="p-6 ">
+          <div className="bg-gray-50 rounded-4xl p-4 text-center">
             <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center">
               <img src="/profile.png" alt="" />
             </div>
@@ -218,7 +260,7 @@ const UniDashboardpage = () => {
           {/* Role-specific navigation */}
           {role === "dsm" && (
             <button
-              onClick={() => router.push("/CRSs/CreatedCSR")}
+              onClick={() => router.push("/CSRs/CreatedCSR")}
               className="flex items-center gap-3 w-full px-4 py-2 rounded-lg hover:bg-indigo-50 text-gray-700 font-bold"
             >
               <PlusCircle className="w-5 h-5" /> Create CSR
@@ -340,35 +382,38 @@ const UniDashboardpage = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-10">
+      <main className="flex-1 p-4">
         {activePage === "overview" && (
           <>
             {/* Welcome Banner */}
-            <div className="relative bg-blue-900 rounded-2xl p-6 mb-4 shadow flex items-center justify-evenly overflow-hidden">
-              <div className="absolute left-2 bottom-0 w-40 h-40">
+            <div className="relative flex-1 bg-blue-900 rounded-2xl mb-4 flex items-center gap-8">
+              {/* Logo */}
+              <div className="hidden md:flex items-center justify-center backdrop-blur-sm rounded-2xl p-4 ">
                 <img
                   src="/Medlife logo.png"
-                  alt="Grass"
-                  className="w-full h-full object-contain"
+                  alt="MedLife Logo"
+                  className="w-24 h-20 object-contain"
                 />
               </div>
 
-              <div className="relative z-10 text-white max-w-md ">
-                <h2 className="text-2xl font-bold mb-2">
-                  Welcome back, {user ? user.name : "User"}!
+              {/* Text Content */}
+              <div className="flex-1">
+                <h2 className="text-3xl font-bold text-white  tracking-tight mb-2">
+                  Welcome back,{" "}
+                  <span className="bg-gradient-to-r from-yellow-300 to-pink-400 bg-clip-text text-transparent">
+                    {user ? user.name : "User"}
+                  </span>{" "}
+                  👋
                 </h2>
-                <p className="text-indigo-100 mb-4">
-                  Let’s check your health with us. Care with your health from
-                  now to get more live better.
+                <p className="text-[14px] text-black leading-relaxed max-w-xl">
+                  Track{" "}
+                  <span className="font-semibold text-black">CSR requests</span>
+                  , manage{" "}
+                  <span className="font-semibold text-black">doctors</span>, and
+                  monitor{" "}
+                  <span className="font-semibold text-black">reports</span> —
+                  all in one smooth, intuitive dashboard.
                 </p>
-              </div>
-
-              <div className="absolute right-4 bottom-0 w-50 h-50">
-                <img
-                  src="/chatgpt.png"
-                  alt="Doctors"
-                  className="w-full h-full object-contain mt-4"
-                />
               </div>
             </div>
 
@@ -429,8 +474,8 @@ const UniDashboardpage = () => {
         {activePage === "csrlist" && hasRole(["dsm", "sm", "gm", "admin"]) && (
           <CSRList />
         )}
-        {activePage === "descionpage" && role === "sm" && <Descionpage />}
-        {activePage === "descionpage" && role === "gm" && <Descionpage />}
+        {activePage === "descionpage" && role === "sm" && <DecisionPage />}
+        {activePage === "descionpage" && role === "gm" && <DecisionPage />}
         {activePage === "approved" && role === "admin" && <Approvedpage />}
         {activePage === "completed" && role === "admin" && <Completedpage />}
         {role === "admin" && (

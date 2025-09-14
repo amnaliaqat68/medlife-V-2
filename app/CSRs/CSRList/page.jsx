@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Search, CheckCircle } from "lucide-react";
+import { Search, CheckCircle, Loader2, FileText } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,11 +34,11 @@ const CSRList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [csrList, setCsrList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState(null);
   const router = useRouter();
 
-  const [totalCSR, settotalCSR] = useState([]);
   const [selectedCSR, setSelectedCSR] = useState(null);
 
   const userRole = "sm";
@@ -51,19 +51,19 @@ const CSRList = () => {
 
   useEffect(() => {
     const fetchCSR = async () => {
-      const res = await fetch("/api/csrInfo/getCSR");
-      const data = await res.json();
-      console.log("Fetched CSR Data:", data);
-      console.log("Sample CSR:", data[0]);
-      setCsrList(data);
-    };
-    fetchCSR();
-  }, []);
-  useEffect(() => {
-    const fetchCSR = async () => {
-      const res = await fetch("/api/csrInfo/getCSR");
-      const data = await res.json();
-      settotalCSR(data);
+      setLoading(true);
+      try {
+        const res = await fetch("/api/csrInfo/getCSR");
+        if (!res.ok) throw new Error("Failed to fetch CSR data");
+        
+        const data = await res.json();
+        console.log("Fetched CSR Data:", data);
+        setCsrList(data);
+      } catch (error) {
+        console.error("Error fetching CSR:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchCSR();
   }, []);
@@ -97,58 +97,94 @@ const CSRList = () => {
   }
 
   return (
-    <div className="space-y-2">
-      <div className="relative bg-blue-900 rounded-2xl p-2 mb-4 shadow flex items-center justify-evenly overflow-hidden">
-        <div className="relative z-10 text-white max-w-md ">
-          <h2 className="text-2xl font-bold mb-2">
-            CUSTOMER SERVICE REQUEST DATA
-          </h2>
-          <p className="text-indigo-100 mb-4"></p>
+    <div className="space-y-6">
+      <div className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-teal-800 rounded-2xl p-6 mb-6 overflow-hidden">
+        {/* Medical background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-4 left-4">
+            <FileText className="w-16 h-16 text-white" />
+          </div>
+          <div className="absolute top-8 right-8">
+            <CheckCircle className="w-12 h-12 text-white" />
+          </div>
+          <div className="absolute bottom-4 right-1/4">
+            <Search className="w-10 h-10 text-white" />
+          </div>
         </div>
 
-        <div className="absolute right-4 bottom-0 w-40 h-40"></div>
+        <div className="relative z-10 text-white">
+          <h1 className="text-4xl font-bold mb-3">
+            Customer Service Request Database
+          </h1>
+          <p className="text-blue-100 text-lg leading-relaxed max-w-2xl">
+            Comprehensive medical service request management system for tracking patient care, 
+            medication requests, and healthcare provider coordination.
+          </p>
+        </div>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>Customer Service Requests</span>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Search className="w-4 h-4 text-gray-500" />
+      <Card className="shadow-lg border-0 bg-white">
+        <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-lg">
+          <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-500 rounded-lg">
+                <FileText className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-gray-800">Medical Service Requests</h2>
+                <p className="text-sm text-gray-600">Manage and track all CSR submissions</p>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <div className="flex items-center border-2 border-gray-200 rounded-lg px-3 py-2 bg-white focus-within:border-blue-500 transition-colors">
+                <Search className="w-4 h-4 text-gray-400 mr-2" />
                 <Input
-                  placeholder="Search CSRs..."
+                  placeholder="Search by doctor, medicine, or district..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-64"
+                  className="border-none focus:ring-0 text-sm w-full sm:w-64 bg-transparent placeholder-gray-400"
                 />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-600">Total:</span>
+                <Badge className="bg-blue-100 text-blue-800 font-bold">
+                  {filteredCSRs.length} CSRs
+                </Badge>
               </div>
             </div>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <Table className="w-full border rounded-lg shadow-sm">
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
+                <p className="text-gray-600">Loading CSR data...</p>
+              </div>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table className="w-full border rounded-lg shadow-sm">
               <TableHeader className="bg-gray-50">
                 <TableRow>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2">
+                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-16 text-center">
                     #
                   </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2">
+                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-48">
                     Doctor
                   </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2">
+                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-32">
                     District
                   </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2">
+                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-56">
                     Medicine
                   </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2">
+                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-32 text-right">
                     Active Cost
                   </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2">
+                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-28 text-center">
                     Status
                   </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-2 py-2 text-center">
+                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-32 text-center">
                     View
                   </TableHead>
                 </TableRow>
@@ -162,82 +198,105 @@ const CSRList = () => {
                       idx % 2 === 0 ? "bg-white" : "bg-gray-50"
                     } hover:bg-indigo-50`}
                   >
-                    {/* Doctor */}
-                    <TableCell className="px-2 py-1 text-[10px]">
-                      <p className="font-medium text-sm text-gray-800">
+                    {/* Serial Number */}
+                    <TableCell className="px-4 py-3 w-16 text-center">
+                      <span className="w-8 h-8 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-sm font-bold mx-auto">
                         {csr.Number || `${idx + 1}`}
-                      </p>
+                      </span>
                     </TableCell>
-                    <TableCell className="px-4 py-1">
-                      <p className="font-medium text-[10px] text-gray-800">
-                        {csr.doctorId?.name || "N/A"}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {csr.doctorId?.specialization || ""}
-                      </p>
+
+                    {/* Doctor */}
+                    <TableCell className="px-4 py-3 w-48">
+                      <div className="space-y-1">
+                        <p className="font-semibold text-sm text-gray-900 truncate">
+                          {csr.doctorId?.name || "N/A"}
+                        </p>
+                        <p className="text-xs text-gray-500 font-medium truncate">
+                          {csr.doctorId?.specialization || "General Practice"}
+                        </p>
+                      </div>
                     </TableCell>
 
                     {/* District */}
-                    <TableCell className="px-2 py-1 text-[10px] text-gray-700">
-                      {csr.doctorId?.district || "N/A"}
+                    <TableCell className="px-4 py-3 w-32">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-blue-400 rounded-full flex-shrink-0"></div>
+                        <span className="text-sm font-medium text-gray-700 truncate">
+                          {csr.doctorId?.district || "N/A"}
+                        </span>
+                      </div>
                     </TableCell>
 
                     {/* Medicine */}
-                    <TableCell className="px-2 py-1 text-[10px] text-gray-700 whitespace-normal ">
+                    <TableCell className="px-4 py-3 w-56">
                       {csr.products?.length > 0 ? (
                         <div className="space-y-1">
-                          {csr.products.map((product, index) => (
-                            <span
+                          {csr.products.slice(0, 2).map((product, index) => (
+                            <div
                               key={index}
-                              className="inline-block text-black text-[10px] font-small  py-1 rounded-md mr-1 mb-1"
+                              className="inline-flex items-center bg-blue-50 text-blue-700 px-2 py-1 rounded-md mr-1 mb-1"
                             >
-                              {product.product}
-                            </span>
+                              <span className="text-xs font-medium truncate max-w-32">
+                                {product.product}
+                              </span>
+                            </div>
                           ))}
+                          {csr.products.length > 2 && (
+                            <div className="text-xs text-gray-500 font-medium">
+                              +{csr.products.length - 2} more
+                            </div>
+                          )}
                         </div>
                       ) : (
-                        "No Products"
+                        <span className="text-sm text-gray-400 italic">No Products</span>
                       )}
                     </TableCell>
 
                     {/* Active Cost */}
-                    <TableCell className="px-2 py-2 text-[10px] text-gray-700">
-                      {csr.Business?.[0]?.exactCost
-                        ? `${csr.Business[0].exactCost}`
-                        : "N/A"}
+                    <TableCell className="px-4 py-3 w-32 text-right">
+                      <div>
+                        <p className="text-sm font-bold text-gray-900">
+                          {csr.Business?.[0]?.exactCost
+                            ? `₨ ${Number(csr.Business[0].exactCost).toLocaleString()}`
+                            : "N/A"}
+                        </p>
+                        <p className="text-xs text-gray-500">Total Cost</p>
+                      </div>
                     </TableCell>
 
                     {/* Status */}
-                    <TableCell className="px-2 py-1 text-[10px]">
+                    <TableCell className="px-4 py-3 w-28 text-center">
                       <span
-                        className={`px-2 py-1 rounded-full font-medium
-              ${
-                getOverallStatus(csr) === "Approved"
-                  ? "bg-green-100 text-green-700"
-                  : getOverallStatus(csr) === "Pending"
-                  ? "bg-100 text-yellow-700"
-                  : "bg-red-100 text-red-700"
-              }`}
+                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          getOverallStatus(csr) === "Approved"
+                            ? "bg-green-100 text-green-800"
+                            : getOverallStatus(csr) === "Pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : getOverallStatus(csr) === "Completed"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
                       >
                         {getOverallStatus(csr)}
                       </span>
                     </TableCell>
 
                     {/* View Button */}
-                    <TableCell className="px-4 py-3 text-center">
+                    <TableCell className="px-4 py-3 w-32 text-center">
                       <Button
                         size="sm"
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1 rounded-md"
+                        className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-sm px-4 py-2 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
                         onClick={() => setSelectedCSR(csr)}
                       >
-                        Detail View
+                        View Details
                       </Button>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </div>
+            </div>
+          )}
         </CardContent>
       </Card>
       {selectedCSR && (

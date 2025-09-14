@@ -13,6 +13,8 @@ import {
   MapPin,
   Edit,
   CheckCircle,
+  Loader2,
+  Activity,
 } from "lucide-react";
 import ExecuteCSRPage from "../executeForm/[id]/page";
 
@@ -49,6 +51,7 @@ const Approvedpage = () => {
   const [endDate, setEndDate] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [csrLoading, setCsrLoading] = useState(true);
   const router = useRouter();
   const printRef = useRef();
 
@@ -88,9 +91,16 @@ const Approvedpage = () => {
   }, []);
   useEffect(() => {
     const fetchCSR = async () => {
-      const res = await fetch("/api/csrInfo/getadminCSR");
-      const data = await res.json();
-      setCsrList(data);
+      setCsrLoading(true);
+      try {
+        const res = await fetch("/api/csrInfo/getadminCSR");
+        const data = await res.json();
+        setCsrList(data);
+      } catch (error) {
+        console.error("Error fetching CSR:", error);
+      } finally {
+        setCsrLoading(false);
+      }
     };
     fetchCSR();
   }, []);
@@ -123,58 +133,108 @@ const Approvedpage = () => {
     <div>
       <div>
         <section className="mt-2">
-          <div className="relative bg-blue-900 rounded-2xl p-4 mb-4 shadow flex items-center justify-evenly overflow-hidden">
-            <div className="relative z-10 text-white max-w-md ">
-              <h2 className="text-2xl font-bold mb-2">APPROVED CSRs</h2>
+          <div className="relative bg-gradient-to-r from-green-900 via-emerald-800 to-teal-800 rounded-2xl p-6 mb-6 overflow-hidden">
+            {/* Medical background pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-4 left-4">
+                <CheckCircle className="w-16 h-16 text-white" />
+              </div>
+              <div className="absolute top-8 right-8">
+                <FileText className="w-12 h-12 text-white" />
+              </div>
+              <div className="absolute bottom-4 left-1/4">
+                <Activity className="w-14 h-14 text-white" />
+              </div>
+              <div className="absolute bottom-8 right-1/4">
+                <TrendingUp className="w-10 h-10 text-white" />
+              </div>
+            </div>
+
+            <div className="relative z-10 text-white">
+              <h1 className="text-4xl font-bold mb-3">
+                Approved CSR Management
+              </h1>
+              <p className="text-green-100 text-lg leading-relaxed max-w-2xl">
+                Review and manage approved Customer Service Requests with comprehensive tracking, 
+                execution workflows, and detailed analytics for healthcare service delivery.
+              </p>
             </div>
           </div>
 
-          {csrList.length === 0 ? (
+          {csrLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
+                <p className="text-gray-600">Loading approved CSRs...</p>
+              </div>
+            </div>
+          ) : csrList.length === 0 ? (
             <p>No CSR available for review.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {csrList.map((csr) => (
                 <div
                   key={csr._id}
-                  className="border rounded-lg p-4 shadow-md bg-white hover:shadow-lg transition"
+                  className="relative overflow-hidden bg-white border-0 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 group rounded-2xl"
                 >
-                  {/* Doctor Name */}
-                  <h3 className="text-lg font-semibold">
-                    {csr.doctorId?.name || "N/A"}
-                  </h3>
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-emerald-400/5 to-teal-500/10"></div>
+                  <div className="p-6 relative">
+                    {/* Header with Status */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
+                        <CheckCircle className="w-6 h-6 text-white" />
+                      </div>
+                      <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">
+                        Approved
+                      </span>
+                    </div>
 
-                  {/* Created By */}
-                  <p className="text-gray-500 text-sm mb-1">
-                    Created by: {csr.creatorId?.name || "N/A"}
-                  </p>
+                    {/* Doctor Info */}
+                    <div className="space-y-2 mb-4">
+                      <h3 className="text-xl font-bold text-gray-800">
+                        {csr.doctorId?.name || "N/A"}
+                      </h3>
+                      <p className="text-sm text-gray-500 font-medium">
+                        {csr.doctorId?.specialization || "General Practice"}
+                      </p>
+                    </div>
 
-                  {/* Commitment */}
-                  <p className="font-semibold text-gray-700 mb-3">
-                    Commitment:{" "}
-                    <span className="text-blue-600">
-                      {csr.Business?.[0]?.businessValueExpected?.toLocaleString() ||
-                        0}
-                    </span>
-                  </p>
+                    {/* Created By */}
+                    <div className="mb-4 p-3 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-gray-500 mb-1">Created by</p>
+                      <p className="text-sm font-semibold text-gray-700">
+                        {csr.creatorId?.name || "N/A"}
+                      </p>
+                    </div>
+
+                  {/* Business Value */}
+                  <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-100">
+                    <p className="text-xs font-medium text-blue-600 mb-1">Expected Business Value</p>
+                    <p className="text-lg font-bold text-blue-900">
+                      ₨ {csr.Business?.[0]?.businessValueExpected?.toLocaleString() || 0}
+                    </p>
+                  </div>
 
                   {/* Action Buttons */}
-                  <div className="flex space-x-2">
+                  <div className="flex gap-3">
                     <Button
-                      variant="default"
                       onClick={() => {
                         console.log("Navigating to:", csr._id);
                         router.push(`/CSRs/executeForm/${csr._id}`);
                       }}
-                      className="bg-green-500 hover:bg-blue-700 text-white"
+                      className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
                     >
+                      <CheckCircle className="w-4 h-4 mr-2" />
                       Execute
                     </Button>
-                    <button
-                      className="border border-gray-400 hover:bg-gray-100 text-black px-3 py-1 rounded-md"
+                    <Button
+                      variant="outline"
                       onClick={() => setSelectedCSR(csr)}
+                      className="px-4 border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 rounded-lg transition-all duration-200"
                     >
-                      View Details
-                    </button>
+                      <FileText className="w-4 h-4" />
+                    </Button>
+                    </div>
                   </div>
                 </div>
               ))}

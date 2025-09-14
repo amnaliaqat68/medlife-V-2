@@ -14,11 +14,12 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Loader2, FileText, Activity, TrendingUp } from "lucide-react";
 
 const Completedpage = () => {
   const [reports, setReports] = useState([]);
   const [selectedCSR, setSelectedCSR] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const printRef = useRef();
 
@@ -28,6 +29,7 @@ const Completedpage = () => {
   });
   useEffect(() => {
     const fetchReports = async () => {
+      setLoading(true);
       try {
         const res = await fetch("/api/csrInfo/getreportsCSR", {
           credentials: "include",
@@ -38,6 +40,8 @@ const Completedpage = () => {
         setReports(data);
       } catch (err) {
         console.error("Fetch failed", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchReports();
@@ -47,65 +51,125 @@ const Completedpage = () => {
     <div>
       <section className="mt-2">
         <section className="mt-2">
-          <div className="relative bg-blue-900 rounded-2xl p-4 mb-4 shadow flex items-center justify-evenly overflow-hidden">
-            <div className="relative z-10 text-white max-w-md ">
-              <h2 className="text-2xl font-bold mb-2">COMPLETED CSRs</h2>
+          <div className="relative bg-gradient-to-r from-blue-900 via-indigo-800 to-purple-800 rounded-2xl p-6 mb-6 overflow-hidden">
+            {/* Medical background pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-4 left-4">
+                <CheckCircle className="w-16 h-16 text-white" />
+              </div>
+              <div className="absolute top-8 right-8">
+                <FileText className="w-12 h-12 text-white" />
+              </div>
+              <div className="absolute bottom-4 left-1/4">
+                <Activity className="w-14 h-14 text-white" />
+              </div>
+              <div className="absolute bottom-8 right-1/4">
+                <TrendingUp className="w-10 h-10 text-white" />
+              </div>
+            </div>
+
+            <div className="relative z-10 text-white">
+              <h1 className="text-4xl font-bold mb-3">
+                Completed CSR Archive
+              </h1>
+              <p className="text-blue-100 text-lg leading-relaxed max-w-2xl">
+                Access and review completed Customer Service Requests with full execution details, 
+                performance metrics, and comprehensive reporting for healthcare service analysis.
+              </p>
             </div>
           </div>
 
-          {reports.length === 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
+                <p className="text-gray-600">Loading completed CSRs...</p>
+              </div>
+            </div>
+          ) : reports.length === 0 ? (
             <p>No CSR available for review.</p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full border-collapse border border-gray-200 bg-white shadow-md rounded-lg">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="border border-gray-200 px-4 py-2 text-left text-sm font-semibold">
-                      Executed By
-                    </th>
-                    <th className="border border-gray-200 px-4 py-2 text-left text-sm font-semibold">
-                      Date
-                    </th>
-                    <th className="border border-gray-200 px-4 py-2 text-left text-sm font-semibold">
-                      Particulars
-                    </th>
-                    <th className="border border-gray-200 px-4 py-2 text-center text-sm font-semibold">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table className="w-full border rounded-lg shadow-sm">
+                <TableHeader className="bg-gray-50">
+                  <TableRow>
+                    <TableHead className="px-4 py-3 font-semibold text-gray-700 text-sm w-16 text-center">#</TableHead>
+                    <TableHead className="px-4 py-3 font-semibold text-gray-700 text-sm w-48">Executed By</TableHead>
+                    <TableHead className="px-4 py-3 font-semibold text-gray-700 text-sm w-32">Date</TableHead>
+                    <TableHead className="px-4 py-3 font-semibold text-gray-700 text-sm w-56">Particulars</TableHead>
+                    <TableHead className="px-4 py-3 font-semibold text-gray-700 text-sm w-48 text-center">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {reports.map((csr, index) => (
-                    <tr
+                    <TableRow
                       key={csr._id || index}
-                      className="hover:bg-gray-50 transition"
+                      className={`transition-colors ${
+                        index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                      } hover:bg-green-50`}
                     >
-                      <td className="border border-gray-200 px-4 py-2 text-sm">
-                        {csr.executedBy || "N/A"}
-                      </td>
-                      <td className="border border-gray-200 px-4 py-2 text-sm">
-                        {csr.executeDate
-                          ? new Date(csr.executeDate).toLocaleDateString()
-                          : "N/A"}
-                      </td>
-                      <td className="border border-gray-200 px-4 py-2 text-sm">
-                        {csr.particulars || "N/A"}
-                      </td>
-                      <td className="border border-gray-200 px-4 py-2 text-center space-x-2">
-                        <Button className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md">
-                          Download
-                        </Button>
-                        <Button
-                          onClick={() => setSelectedCSR(csr)}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
-                        >
-                          View Details
-                        </Button>
-                      </td>
-                    </tr>
+                      {/* Serial Number */}
+                      <TableCell className="px-4 py-3 w-16 text-center">
+                        <span className="w-8 h-8 bg-green-100 text-green-800 rounded-full flex items-center justify-center text-sm font-bold mx-auto">
+                          {index + 1}
+                        </span>
+                      </TableCell>
+
+                      {/* Executed By */}
+                      <TableCell className="px-4 py-3 w-48">
+                        <div className="space-y-1">
+                          <p className="font-bold text-sm text-gray-900 truncate">
+                            {csr.executedBy || "N/A"}
+                          </p>
+                          <p className="text-xs text-gray-500 font-medium">
+                            CSR Executor
+                          </p>
+                        </div>
+                      </TableCell>
+
+                      {/* Date */}
+                      <TableCell className="px-4 py-3 w-32">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
+                          <span className="text-sm font-medium text-gray-700">
+                            {csr.executeDate
+                              ? new Date(csr.executeDate).toLocaleDateString()
+                              : "N/A"}
+                          </span>
+                        </div>
+                      </TableCell>
+
+                      {/* Particulars */}
+                      <TableCell className="px-4 py-3 w-56">
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium text-gray-700 line-clamp-2">
+                            {csr.particulars || "No particulars provided"}
+                          </p>
+                        </div>
+                      </TableCell>
+
+                      {/* Actions */}
+                      <TableCell className="px-4 py-3 w-48 text-center">
+                        <div className="flex justify-center gap-2">
+                          <Button 
+                            size="sm"
+                            className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-3 py-1 text-xs rounded-lg shadow-md"
+                          >
+                            Download
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => setSelectedCSR(csr)}
+                            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-3 py-1 text-xs rounded-lg shadow-md"
+                          >
+                            View Details
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           )}
         </section>

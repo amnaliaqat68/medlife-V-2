@@ -407,7 +407,7 @@ export default function CSRForm({ doctorId }) {
     </div>
   );
   return (
-    <div className="bg-blue-200 min-h-screen py-2 rounded-md">
+    <div className="bg-white overflow-hidden min-h-screen py-2 rounded-md">
       <Head>
         <title>CSR Performa Form</title>
       </Head>
@@ -416,13 +416,13 @@ export default function CSRForm({ doctorId }) {
 
       <form
         onSubmit={handleSubmit}
-        className="max-w-6xl mx-auto p-5 space-y-4 bg-white rounded-md "
+        className="max-w-6xl mx-auto p-5 space-y-4 bg-sky-100 rounded-md "
       >
         {/* Title */}
         <div className="text-center">
           <section className="relative w-full h-[80px] md:h-[80px] rounded-md flex items-center justify-between px-6">
             {/* Background overlay */}
-            <div className="absolute inset-0 bg-blue-950 rounded-md"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-violet-500 rounded-2xl "></div>
 
             {/* Logo on left */}
             <div className="relative z-10 flex items-center">
@@ -441,11 +441,11 @@ export default function CSRForm({ doctorId }) {
 
         <section className="w-full flex flex-col space-y-8">
           {/* SMIO/FE Section */}
-          <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0">
-            <div className="flex-1">
+          <div className="flex  flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0">
+            <div className="flex-1 ">
               <label
                 htmlFor="filledBy"
-                className="block text-sm font-semibold text-gray-800 mb-2 print:text-black"
+                className="block text-sm  font-semibold text-gray-800 mb-2 print:text-black"
               >
                 SMIO / FE
               </label>
@@ -454,7 +454,7 @@ export default function CSRForm({ doctorId }) {
                 id="filledBy"
                 name="filledBy"
                 placeholder="Enter CSR User's Name"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 shadow-sm
+                className=" bg-white w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 shadow-sm
           focus:border-blue-500 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
                 value={formData.filledBy}
                 onChange={handleInputChange}
@@ -474,7 +474,7 @@ export default function CSRForm({ doctorId }) {
                 value={formData.groupOfFE}
                 onChange={handleInputChange}
                 required
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900
+                className=" bg-white w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900
           focus:border-blue-500 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-sm transition"
               >
                 <option value="" disabled>
@@ -1028,7 +1028,7 @@ export default function CSRForm({ doctorId }) {
         </section>
 
         {/* Chemist Table */}
-        <section className=" border border-gray-200 rounded-md p-2 sm:p-4 print:bg-white print:shadow-none print:p-0 print:border-none">
+        <section className=" bg-white border border-gray-200 rounded-md p-2 sm:p-4 print:bg-white print:shadow-none print:p-0 print:border-none">
           <h2
             id="doctor-details-title"
             className="text-1xl font-bold text-center text-gray-900 mb-6 border-b border-gray-200 pb-2"
@@ -1074,7 +1074,7 @@ export default function CSRForm({ doctorId }) {
                         onChange={(e) =>
                           handleInputChange(e, index, "chemists", "chemistName")
                         }
-                        className="w-full px-2 py-1 border  focus:ring-2 focus:ring-blue-400 focus:outline-none print:border-gray-400"
+                        className=" bg-white w-full px-2 py-1 border  focus:ring-2 focus:ring-blue-400 focus:outline-none print:border-gray-400"
                       />
                     </td>
                     <td className="border px-4 py-2 print:border-black">
@@ -1144,7 +1144,7 @@ export default function CSRForm({ doctorId }) {
               value={formData.investmentInstructions}
               onChange={handleInputChange}
               rows={2}
-              className="w-full px-3 py-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-500 print:border-gray-400 print:shadow-none"
+              className=" bg-white w-full px-3 py-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-500 print:border-gray-400 print:shadow-none"
             />
           </div>
           <div>
@@ -1156,13 +1156,13 @@ export default function CSRForm({ doctorId }) {
               value={formData.comments}
               onChange={handleInputChange}
               rows={2}
-              className="w-full px-3 py-2 border rounded-md  focus:outline-none focus:ring-2 focus:ring-blue-500 print:border-gray-400 print:shadow-none"
+              className=" bg-white w-full px-3 py-2 border rounded-md  focus:outline-none focus:ring-2 focus:ring-blue-500 print:border-gray-400 print:shadow-none"
             />
           </div>
         </section>
 
         {/* Ledger Summary */}
-        <section className=" border border-gray-200 rounded-md p-4 sm:p-6  mt-4 print:bg-white print:shadow-none print:p-0 print:border-none">
+        <section className="bg-white  border border-gray-200 rounded-md p-4 sm:p-6  mt-4 print:bg-white print:shadow-none print:p-0 print:border-none">
           <h2
             id="doctor-details-title"
             className="text-1xl font-bold text-center text-gray-900 mb-6 border-b border-gray-200 pb-3"
@@ -1283,7 +1283,7 @@ export default function CSRForm({ doctorId }) {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="bg-blue-700 hover:bg-yellow-500 text-blue-950 font-semibold w-[400px] mt-6  px-8 py-3 rounded-lg shadow-md  transition-all duration-200 text-lg "
+            className="bg-gradient-to-br from-green-500 to-emerald-500  hover:bg-yellow-500 text-blue-950 font-semibold w-[400px] mt-6  px-8 py-3 rounded-lg shadow-md  transition-all duration-200 text-lg "
           >
             Submit
           </button>

@@ -141,8 +141,9 @@ export default function DoctorManagement() {
             Healthcare Providers Database
           </h1>
           <p className="text-purple-100 text-lg leading-relaxed max-w-2xl">
-            Comprehensive directory of medical professionals, specialists, and healthcare providers 
-            with detailed profiles, contact information, and practice management tools.
+            Comprehensive directory of medical professionals, specialists, and
+            healthcare providers with detailed profiles, contact information,
+            and practice management tools.
           </p>
         </div>
       </div>
@@ -155,8 +156,12 @@ export default function DoctorManagement() {
                 <User className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-800">Healthcare Providers</h2>
-                <p className="text-sm text-gray-600">Manage medical professionals and specialists</p>
+                <h2 className="text-xl font-bold text-gray-800">
+                  Healthcare Providers
+                </h2>
+                <p className="text-sm text-gray-600">
+                  Manage medical professionals and specialists
+                </p>
               </div>
             </div>
 

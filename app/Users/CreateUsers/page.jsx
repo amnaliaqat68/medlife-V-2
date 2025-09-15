@@ -11,6 +11,7 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
+import AddUserpage from "../addUsers/page";
 
 
 const Createuserpage = () => {
@@ -243,7 +244,7 @@ const Createuserpage = () => {
             >
               ✖
             </button>
-            <CreateUserpage />
+            <AddUserpage />
           </div>
         </div>
       )}

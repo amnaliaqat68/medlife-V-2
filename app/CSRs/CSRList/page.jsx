@@ -212,7 +212,7 @@ const CSRList = () => {
                           {csr.doctorId?.name || "N/A"}
                         </p>
                         <p className="text-xs text-gray-500 font-medium truncate">
-                          {csr.doctorId?.specialization || "General Practice"}
+                          {csr.doctorId?.speciality || "General Practice"}
                         </p>
                       </div>
                     </TableCell>

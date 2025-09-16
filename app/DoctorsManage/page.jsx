@@ -31,7 +31,6 @@ export default function DoctorManagement() {
   const [userRole, setUserRole] = useState(null);
   const [showDrawer, setShowDrawer] = useState(false);
   const [editingDoc, setEditingDoc] = useState(null);
-
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

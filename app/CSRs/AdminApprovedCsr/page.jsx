@@ -95,7 +95,14 @@ const Approvedpage = () => {
       try {
         const res = await fetch("/api/csrInfo/getadminCSR");
         const data = await res.json();
-        setCsrList(data);
+        if (res.ok) {
+        // ✅ Only keep CSRs approved by GM but not executed by Admin
+        const filtered = data.filter(
+          (csr) => csr.gmStatus === "approved" && csr.adminStatus === "pending"
+        );
+
+        setCsrList(filtered);
+      }
       } catch (error) {
         console.error("Error fetching CSR:", error);
       } finally {
@@ -209,9 +216,9 @@ const Approvedpage = () => {
 
                   {/* Business Value */}
                   <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-100">
-                    <p className="text-xs font-medium text-blue-600 mb-1">Expected Business Value</p>
+                    <p className="text-xs font-medium text-blue-600 mb-1">Activity Cost</p>
                     <p className="text-lg font-bold text-blue-900">
-                      ₨ {csr.Business?.[0]?.businessValueExpected?.toLocaleString() || 0}
+                      ₨ {csr.Business?.[0]?.exactCost?.toLocaleString() || 0}
                     </p>
                   </div>
 
@@ -449,7 +456,7 @@ const Approvedpage = () => {
                             </td>
                           </tr>
                           <tr>
-                            <td className="p-1 border">Exact Cost</td>
+                            <td className="p-1 border">Activity Cost</td>
                             <td className="p-1 border">
                               {business.exactCost
                                 ? Number(business.exactCost).toLocaleString()

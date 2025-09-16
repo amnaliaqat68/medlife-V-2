@@ -22,17 +22,21 @@ export async function POST(req) {
       email,
       contact,
       totalValue,
-     
     } = body;
 
-    const existingDoctor = await Doctor.findOne({ email });
-    if (existingDoctor) {
-      return new NextResponse(
-        JSON.stringify({ error: "Doctor with this email already exists" }),
-        { status: 400 }
-      );
+    let existingDoctor = null;
+
+    if (email) {
+      existingDoctor = await Doctor.findOne({ email });
+      if (existingDoctor) {
+        return new NextResponse(
+          JSON.stringify({ error: "Doctor with this email already exists" }),
+          { status: 400 }
+        );
+      }
     }
-    const newDoctor = await Doctor.create({
+
+    const doctorData = {
       name,
       speciality,
       qualification,
@@ -44,12 +48,17 @@ export async function POST(req) {
       address,
       status,
       investmentLastYear,
-      email,
       contact,
       totalValue,
-       isDeleted: false,
-    });
+      isDeleted: false,
+    };
 
+    // ✅ only add email if provided
+    if (email) {
+      doctorData.email = email;
+    }
+
+    const newDoctor = await Doctor.create(doctorData);
     return new NextResponse(JSON.stringify(newDoctor), {
       status: 201,
     });

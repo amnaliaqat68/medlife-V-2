@@ -18,7 +18,11 @@ const addDoctorSchema = new mongoose.Schema(
     investmentLastYear: {
       type: Number,
     },
-    email: { type: String },
+    email: { type: String,
+      required: false, 
+       sparse: true,    
+  unique: true, },
+  
     contact: { type: String },
     totalValue: { type: Number },
   },

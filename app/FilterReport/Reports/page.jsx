@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,15 @@ import {
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
 import SummaryPage from "../nationalSummary/page";
-import { Loader2, FileText, BarChart3, Search, User, MapPin, Calendar } from "lucide-react";
+import {
+  Loader2,
+  FileText,
+  BarChart3,
+  Search,
+  User,
+  MapPin,
+  Calendar,
+} from "lucide-react";
 import { toast } from "react-toastify";
 import Filterpage from "../fetFilter/page";
 
@@ -24,6 +32,7 @@ const Reportpage = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
+  const [doctorList, setDoctorList] = useState([]);
   const router = useRouter();
 
   const handleSearch = () => {
@@ -31,6 +40,19 @@ const Reportpage = () => {
       `/FilterReport/fetFilter?district=${district}&startDate=${startDate}&endDate=${endDate}&name=${name}`
     );
   };
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      const res = await fetch("/api/doctorsManage/getDoctors");
+      const data = await res.json();
+      console.log("Fetched doctor data:", data);
+      const formatted = data.map((doc) => ({
+        value: doc._id,
+        label: doc.name,
+      }));
+      setDoctorList(formatted);
+    };
+    fetchDoctors();
+  }, []);
   return (
     <div className="space-y-8">
       {/* Enhanced Header */}
@@ -44,10 +66,14 @@ const Reportpage = () => {
             <BarChart3 className="w-20 h-20 text-white" />
           </div>
         </div>
-        
+
         <div className="relative z-10 text-white text-center">
-          <h1 className="text-4xl font-bold mb-3">Medical Reports & Analytics</h1>
-          <p className="text-green-100 text-lg">Generate comprehensive CSR reports with advanced filtering options</p>
+          <h1 className="text-4xl font-bold mb-3">
+            Medical Reports & Analytics
+          </h1>
+          <p className="text-green-100 text-lg">
+            Generate comprehensive CSR reports with advanced filtering options
+          </p>
         </div>
       </div>
 
@@ -59,32 +85,43 @@ const Reportpage = () => {
               <Search className="w-6 h-6 text-white" />
             </div>
             <div className="flex flex-col justify-center">
-              <h2 className="text-gray-800 font-bold text-lg">Advanced Report Filters</h2>
-              <p className="text-sm text-gray-600 font-normal">Configure your search criteria for detailed medical reports</p>
+              <h2 className="text-gray-800 font-bold text-lg">
+                Advanced Report Filters
+              </h2>
+              <p className="text-sm text-gray-600 font-normal">
+                Configure your search criteria for detailed medical reports
+              </p>
             </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="p-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-8">
+          
             {/* Doctor Name */}
             <div className="space-y-3">
-              <Label htmlFor="name" className="text-sm font-bold text-gray-700 flex items-center gap-2">
+              <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
                 <User className="w-4 h-4 text-green-600" />
                 Healthcare Provider
               </Label>
-              <div className="relative">
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter doctor's full name"
-                  className="pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 text-sm"
-                />
-                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                  <Search className="w-4 h-4 text-gray-400" />
-                </div>
-              </div>
-              <p className="text-xs text-gray-500">Search by doctor's name or specialty</p>
+              <Select value={name} onValueChange={setName}>
+                <SelectTrigger className="border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 py-4">
+                  <SelectValue placeholder="Select doctor Name" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-2 border-gray-100 shadow-xl max-h-64 overflow-y-auto">
+                  {doctorList.map((doc) => (
+                    <SelectItem
+                      key={doc.value}
+                      value={doc.label} // use doc.label (doctor name)
+                      className="py-2 px-4 hover:bg-green-50 focus:bg-green-50"
+                    >
+                      {doc.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-gray-500">
+                Search or select by doctor's name
+              </p>
             </div>
 
             {/* District */}
@@ -99,12 +136,35 @@ const Reportpage = () => {
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-2 border-gray-100 shadow-xl">
                   {[
-                    "Multan", "Faisalabad", "Karachi", "Lahore", "Abbottabad",
-                    "Sheikhupura", "Kasur", "DGK", "Jampur", "Layyah", "RYK",
-                    "BHP", "Khanewal", "Sargodha", "Chiniot", "Peshawar",
-                    "Charsadda", "Mardan", "Nowshera", "Swat", "Sahiwal",
-                    "Timergara", "Burewala", "Bhakkar", "Jhang", "Toba",
-                    "Gojra", "Gujranwala", "Sialkot"
+                    "Multan",
+                    "Faisalabad",
+                    "Karachi",
+                    "Lahore",
+                    "Abbottabad",
+                    "Sheikhupura",
+                    "Kasur",
+                    "DGK",
+                    "Jampur",
+                    "Layyah",
+                    "RYK",
+                    "BHP",
+                    "Khanewal",
+                    "Sargodha",
+                    "Chiniot",
+                    "Peshawar",
+                    "Charsadda",
+                    "Mardan",
+                    "Nowshera",
+                    "Swat",
+                    "Sahiwal",
+                    "Timergara",
+                    "Burewala",
+                    "Bhakkar",
+                    "Jhang",
+                    "Toba",
+                    "Gojra",
+                    "Gujranwala",
+                    "Sialkot",
                   ].map((city) => (
                     <SelectItem
                       key={city.toLowerCase()}
@@ -119,12 +179,17 @@ const Reportpage = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <p className="text-xs text-gray-500">Select medical service area</p>
+              <p className="text-xs text-gray-500">
+                Select medical service area
+              </p>
             </div>
 
             {/* Start Date */}
             <div className="space-y-3">
-              <Label htmlFor="startDate" className="text-sm font-bold text-gray-700 flex items-center gap-2">
+              <Label
+                htmlFor="startDate"
+                className="text-sm font-bold text-gray-700 flex items-center gap-2"
+              >
                 <Calendar className="w-4 h-4 text-green-600" />
                 Report Start Date
               </Label>
@@ -137,12 +202,17 @@ const Reportpage = () => {
                   className="pl-4 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 text-sm"
                 />
               </div>
-              <p className="text-xs text-gray-500">Beginning of report period</p>
+              <p className="text-xs text-gray-500">
+                Beginning of report period
+              </p>
             </div>
 
             {/* End Date */}
             <div className="space-y-3">
-              <Label htmlFor="endDate" className="text-sm font-bold text-gray-700 flex items-center gap-2">
+              <Label
+                htmlFor="endDate"
+                className="text-sm font-bold text-gray-700 flex items-center gap-2"
+              >
                 <Calendar className="w-4 h-4 text-green-600" />
                 Report End Date
               </Label>

@@ -46,7 +46,7 @@ try {
       if (!res.ok) throw new Error(data.message || "Something went wrong");
 
       toast.success("CSR executed successfully!");
-      router.push('/admin/dashboard')
+      router.push('/dashboard')
     } catch (err) {
       console.error(err);
       toast.error("Execution failed");

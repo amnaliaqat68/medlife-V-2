@@ -5,7 +5,7 @@ import axios from "axios";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "react-toastify";
 
-export default function AddDoctorForm({ doctor }) {
+export default function AddDoctorForm({ doctor, onSuccess }) {
   const { id } = useParams();
   const [form, setForm] = useState({
     name: "",
@@ -83,29 +83,13 @@ export default function AddDoctorForm({ doctor }) {
       }
 
       // ✅ Success handling
-      if (!doctor?._id) {
-        // If it was a new doctor, clear form
-        setForm({
-          name: "",
-          speciality: "",
-          district: "",
-          address: "",
-          brick: "",
-          group: "",
-          zone: "",
-          qualification: "",
-          designation: "",
-          status: "active",
-          investmentLastYear: "",
-          email: "",
-          contact: "",
-          totalValue: "",
-        });
-      }
-
+      
       toast.success(
         doctor ? "Doctor updated successfully!" : "Doctor added successfully!"
       );
+       if (typeof onSuccess === "function") {
+      onSuccess(); 
+    }
     } catch (err) {
       console.error(err);
       toast.error("Error submitting doctor");

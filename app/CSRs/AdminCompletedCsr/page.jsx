@@ -4,7 +4,13 @@ import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useReactToPrint } from "react-to-print";
-import { CheckCircle, Loader2, FileText, Activity, TrendingUp } from "lucide-react";
+import {
+  CheckCircle,
+  Loader2,
+  FileText,
+  Activity,
+  TrendingUp,
+} from "lucide-react";
 
 const Completedpage = () => {
   const [reports, setReports] = useState([]);
@@ -59,12 +65,11 @@ const Completedpage = () => {
             </div>
 
             <div className="relative z-10 text-white">
-              <h1 className="text-4xl font-bold mb-3">
-                Completed CSR Archive
-              </h1>
+              <h1 className="text-4xl font-bold mb-3">Completed CSR Archive</h1>
               <p className="text-blue-100 text-lg leading-relaxed max-w-2xl">
-                Access and review completed Customer Service Requests with full execution details, 
-                performance metrics, and comprehensive reporting for healthcare service analysis.
+                Access and review completed Customer Service Requests with full
+                execution details, performance metrics, and comprehensive
+                reporting for healthcare service analysis.
               </p>
             </div>
           </div>
@@ -96,28 +101,27 @@ const Completedpage = () => {
                         Completed
                       </span>
                     </div>
+                    {/* Doctor Info */}
+                    <div className="mb-3 p-2 bg-gray-50 rounded-lg">
+                      <p className="text-xl text-gray-900 mb-1">Doctor</p>
+                      <p className="text-xs font-bold text-black truncate">
+                        {csr.doctorId?.name || "N/A"}
+                      </p>
+                    </div>
 
                     {/* Executed By Info */}
                     <div className="mb-3">
                       <h3 className="text-sm font-bold text-gray-800 truncate">
                         {csr.executedBy || "N/A"}
                       </h3>
-                      <p className="text-xs text-gray-500">
-                        CSR Executor
-                      </p>
-                    </div>
-
-                    {/* Doctor Info */}
-                    <div className="mb-3 p-2 bg-gray-50 rounded-lg">
-                      <p className="text-xs text-gray-500 mb-1">Doctor</p>
-                      <p className="text-xs font-semibold text-gray-700 truncate">
-                        {csr.doctorId?.name || "N/A"}
-                      </p>
+                      <p className="text-xs text-gray-500">CSR Executor</p>
                     </div>
 
                     {/* Execution Date */}
                     <div className="mb-3 p-2 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-100">
-                      <p className="text-xs font-medium text-green-600 mb-1">Executed</p>
+                      <p className="text-xs font-medium text-green-600 mb-1">
+                        Executed
+                      </p>
                       <p className="text-xs font-bold text-green-900">
                         {csr.executeDate
                           ? new Date(csr.executeDate).toLocaleDateString()
@@ -127,7 +131,9 @@ const Completedpage = () => {
 
                     {/* Particulars */}
                     <div className="mb-3 p-2 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-100">
-                      <p className="text-xs font-medium text-purple-600 mb-1">Particulars</p>
+                      <p className="text-xs font-medium text-purple-600 mb-1">
+                        Particulars
+                      </p>
                       <p className="text-xs font-medium text-purple-900 line-clamp-1">
                         {csr.particulars || "No particulars provided"}
                       </p>
@@ -135,9 +141,11 @@ const Completedpage = () => {
 
                     {/* Business Value */}
                     <div className="mb-3 p-2 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg border border-orange-100">
-                      <p className="text-xs font-medium text-orange-600 mb-1">Business Value</p>
+                      <p className="text-xs font-medium text-orange-600 mb-1">
+                        Activity Cost
+                      </p>
                       <p className="text-sm font-bold text-orange-900">
-                        ₨ {csr.Business?.[0]?.businessValueExpected?.toLocaleString() || 0}
+                        ₨ {csr.Business?.[0]?.exactCost?.toLocaleString() || 0}
                       </p>
                     </div>
 
@@ -399,7 +407,7 @@ const Completedpage = () => {
                               </td>
                             </tr>
                             <tr>
-                              <td className="p-1 border">Exact Cost</td>
+                              <td className="p-1 border">Activity Cost</td>
                               <td className="p-1 border">
                                 {business.exactCost
                                   ? Number(business.exactCost).toLocaleString()

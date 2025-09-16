@@ -1,21 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Select from "react-select";
 
-export default function AddUserpage() {
+export default function AddUserpage({ user, onSuccess }) {
   const router = useRouter();
+  const { id } = useParams();
   const [form, setForm] = useState({
     name: "",
     phone: "",
     email: "",
     password: "",
     designation: "",
-    district: "",
+    district: [],
     role: "SM",
   });
   const areaOptions = [
@@ -59,36 +60,65 @@ export default function AddUserpage() {
     };
 
     try {
-      const res = await fetch("/api/auth/createUser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-        credentials: "include",
-      });
+      let res;
+      if (user?._id) {
+        // Editing → PATCH
+        res = await fetch(`/api/UpdateUser/${user._id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        // Creating → POST
+        res = await fetch(`/api/auth/createUser`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
 
       const data = await res.json();
 
-      if (res.status === 201) {
-        toast.success("User registered successfully!");
-        setForm({
-          name: "",
-          phone: "",
-          email: "",
-          group: "",
-          password: "",
-          designation: "",
-          district: "",
-        });
-      } else {
-        toast.error(data.error || "Something went wrong");
+      if (!res.ok) {
+        toast.error(data.error || data.message || "Something went wrong");
+        return;
       }
+
+      // ✅ Success toast
+      if (user?._id) {
+        toast.success("User updated successfully!");
+      } else {
+        toast.success("User added successfully!");
+      }
+      if (typeof onSuccess === "function") {
+      onSuccess(); 
+    }
     } catch (err) {
-      console.error(err.message);
-      toast.error("Error submitting form");
+      console.error(err);
+      toast.error("Error submitting user");
     }
   };
+  useEffect(() => {
+    if (user) {
+      setForm({
+        name: user.name || "",
+        phone: user.phone || "",
+
+        email: user.email || "",
+        designation: user.designation || "",
+
+        district: Array.isArray(user.district) ? user.district : [],
+        group: user.group || "",
+        role: user.role || "",
+      });
+    }
+  }, [user]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
   const fetchUsers = async () => {
     try {
       const res = await fetch("/api/auth/getDSMusers", {
@@ -248,11 +278,10 @@ export default function AddUserpage() {
               type="password"
               name="password"
               placeholder="Password"
-              value={form.password}
+              value={form.password || ""}
               onChange={(e) =>
-                setForm({ ...form, [e.target.name]: e.target.value })
+              setForm({ ...form, [e.target.name]: e.target.value })
               }
-              required
               className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-400 transition-all bg-gray-50 text-sm"
             />
           </div>

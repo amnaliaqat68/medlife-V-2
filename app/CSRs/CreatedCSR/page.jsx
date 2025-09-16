@@ -249,7 +249,7 @@ export default function CSRForm({ doctorId }) {
       if (res.ok) {
         toast.success("CSR submitted successfully!");
         resetForm();
-        router.push("/SMuser/dashboard");
+        router.push("/dashboard");
       } else {
         toast.error(`Error submitting CSR: ${data.message || "Unknown error"}`);
       }

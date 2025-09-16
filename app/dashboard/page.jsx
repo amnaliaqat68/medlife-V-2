@@ -50,6 +50,7 @@ const UniDashboardpage = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [activePage, setActivePage] = useState("overview");
   const [loading, setLoading] = useState(true);
+  const [activeUsers, setActiveUsers] = useState(0);
   const [loadingStates, setLoadingStates] = useState({
     user: true,
     csr: true,
@@ -185,7 +186,22 @@ const UniDashboardpage = () => {
   useEffect(() => {
     fetchAllData();
   }, []);
-
+// useEffect(()=>{
+//   async function fetchActiveUsers(){
+//     try{
+//       const res = await fetch("/api/auth/activeUser");
+//       const data = await res.json();
+//       if(res.ok){
+//         setActiveUsers(data.activeUsers);
+//       }
+//     }catch (err) {
+//         console.error("Failed to fetch active users:", err);
+//       }
+//     }
+//   fetchActiveUsers();
+//   const interval = setInterval(fetchActiveUsers, 30000);
+//     return () => clearInterval(interval);
+// },[])
   // Allowed roles helper
   const hasRole = (roles) => roles.includes(role);
 
@@ -372,7 +388,7 @@ const UniDashboardpage = () => {
                 onClick={() => router.push("/Profile")}
                 className="mt-3 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
-                Set Profile
+                Update Profile
               </button>
             </div>
           )}
@@ -882,7 +898,7 @@ const UniDashboardpage = () => {
                               Active Users
                             </p>
                             <p className="text-xs text-blue-600">
-                              {user ? "1" : "0"}
+                              {activeUsers}
                             </p>
                           </div>
                           <div className="text-center">

@@ -13,12 +13,10 @@ import autoTable from "jspdf-autotable";
 function FilterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const district = searchParams.get("district") || "";
   const startDate = searchParams.get("startDate") || "";
   const endDate = searchParams.get("endDate") || "";
   const name = searchParams.get("name") || "";
-
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -159,7 +157,7 @@ function FilterContent() {
 
   return (
     <div>
-      <header className="flex items-center justify-between w-full px-6 py-4 bg-white shadow-md sticky top-0 z-50 border-b border-gray-200">
+      <header className="flex items-center justify-between w-full px-6 py-4 bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 shadow-md sticky top-0 z-50 border-b border-gray-200">
         {/* Left: Logo + Brand */}
         <div className="flex items-center space-x-3">
           <img

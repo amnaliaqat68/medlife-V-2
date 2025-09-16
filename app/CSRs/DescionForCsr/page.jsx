@@ -324,7 +324,7 @@ const DecisionPage = () => {
                   </p>
                   <p>
                     <strong>District:</strong>{" "}
-                    {selectedCSR.creatorId?.area || "N/A"}
+                    {selectedCSR.creatorId?.district|| "N/A"}
                   </p>
                   <p>
                     <strong> FE/MIO/SMIO:</strong>{" "}

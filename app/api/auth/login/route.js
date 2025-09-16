@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import connectDB  from "../../../config/db.js";
@@ -20,7 +21,7 @@ export async function POST(req) {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
 
   const token = jwt.sign(
-    { userId: user._id, role: user.role, name: user.name, email: user.email},
+    { userId: user._id, role: user.role, name: user.name, email: user.email, phone: user.phone, district: user.district,},
     process.env.JWT_SECRET_KEY,
     { expiresIn: "1d" }
   );
@@ -30,6 +31,8 @@ export async function POST(req) {
     role: user.role,
     name: user.name,
     email: user.email,
+    phone:user.phone,
+    district:user.district,
   }, });
   res.cookies.set("token", token, {
     httpOnly: true,

@@ -36,7 +36,7 @@ const SummaryPage = ({ data = [] }) => {
   }, []);
 
   return (
-    <div className="overflow-x-auto  m-2 mt-4 bg-white">
+    <div className="overflow-x-auto  m-2 mt-4 bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50">
       <table className="min-w-full table-auto   border border-gray-400 items-center text-center">
         <thead className="bg-blue-100 border">
           <tr>
@@ -212,7 +212,7 @@ const SummaryPage = ({ data = [] }) => {
                   </p>
                   <p>
                     <strong>District:</strong>{" "}
-                    {selectedCSR.creatorId?.area || "N/A"}
+                    {selectedCSR.creatorId?.district || "N/A"}
                   </p>
                   <p>
                     <strong> FE/MIO/SMIO:</strong>{" "}

@@ -28,7 +28,7 @@ const Reportpage = () => {
 
   const handleSearch = () => {
     router.push(
-      `/Uni/fetFilter?district=${district}&startDate=${startDate}&endDate=${endDate}&name=${name}`
+      `/FilterReport/fetFilter?district=${district}&startDate=${startDate}&endDate=${endDate}&name=${name}`
     );
   };
   return (

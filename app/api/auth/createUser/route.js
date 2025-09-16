@@ -20,7 +20,7 @@ export async function POST(req) {
     if (decoded.role !== "admin") {
       return NextResponse.json({ error: "Permission denied" }, { status: 403 });
     }
-    const { name, email, password, role, phone, designation, area, group } =
+    const { name, email, password, role, phone, designation, district, group } =
       await req.json();
 
     // Simple role check without auth (for testing only)
@@ -62,7 +62,7 @@ export async function POST(req) {
       name,
       email,
       designation,
-      area,
+      district,
       group,
       phone,
       password: hashedPassword,

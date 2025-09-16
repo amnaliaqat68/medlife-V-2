@@ -22,7 +22,7 @@ export async function POST(req) {
     return NextResponse.json({ error: "Permission denied" }, { status: 403 });
   }
 
-  const { name, email, password, role, phone, area, designation,group } =
+  const { name, email, password, role, phone, district, designation,group } =
     await req.json();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -49,7 +49,7 @@ export async function POST(req) {
     role: role.toLowerCase(),
     phone,
     group,
-    area,
+    district,
     designation,
   });
 

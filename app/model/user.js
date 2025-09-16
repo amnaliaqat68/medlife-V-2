@@ -33,20 +33,28 @@ const userSchema = new mongoose.Schema(
         return ["dsm", "sm"].includes(this.role);
       },
     },
-    area: {
-      type: String,
+    district: {
+      type: [String],
       required: function () {
-        return ["dsm", "sm"].includes(this.role);
+        return ["dsm", "sm","gm"].includes(this.role);
       },
     },
     designation: {
       type: String,
       required: function () {
-        return ["dsm", "sm"].includes(this.role);
+        return ["dsm", "sm","gm"].includes(this.role);
       },
     },
     
     isVerified: { type: Boolean, default: false },
+    lastActive: {
+      type: Date,
+      default: Date.now,
+    },
+    profileImage: {
+  type: String,
+  default: "/profile.png", 
+},
   },
   { timestamps: true }
 );

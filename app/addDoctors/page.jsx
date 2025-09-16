@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Select from "react-select";
 import axios from "axios";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "react-toastify";
@@ -51,19 +52,22 @@ export default function AddDoctorForm({ doctor }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const payload = { ...form };
+  const payload = { ...form };
+  if (!payload.email) {
+    delete payload.email;
+  }
 
     try {
       let res;
       if (doctor?._id) {
-        // If editing, call PATCH
+        // Editing → PATCH
         res = await fetch(`/api/doctorsManage/updateDoc/${doctor._id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
       } else {
-        // If creating, call POST
+        // Creating → POST
         res = await fetch(`/api/doctorsManage/doctors`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -72,12 +76,36 @@ export default function AddDoctorForm({ doctor }) {
       }
 
       const data = await res.json();
-      if (res.ok) {
-        toast.success(doctor ? "Doctor updated!" : "Doctor added!");
-      
-      } else {
-        toast.error(data.message || "Something went wrong");
+
+      if (!res.ok) {
+        toast.error(data.error || data.message || "Something went wrong");
+        return;
       }
+
+      // ✅ Success handling
+      if (!doctor?._id) {
+        // If it was a new doctor, clear form
+        setForm({
+          name: "",
+          speciality: "",
+          district: "",
+          address: "",
+          brick: "",
+          group: "",
+          zone: "",
+          qualification: "",
+          designation: "",
+          status: "active",
+          investmentLastYear: "",
+          email: "",
+          contact: "",
+          totalValue: "",
+        });
+      }
+
+      toast.success(
+        doctor ? "Doctor updated successfully!" : "Doctor added successfully!"
+      );
     } catch (err) {
       console.error(err);
       toast.error("Error submitting doctor");
@@ -149,19 +177,54 @@ export default function AddDoctorForm({ doctor }) {
           </div>
 
           {/* Location */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="mb-4">
+            <label
+              htmlFor="district"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               District
             </label>
-            <input
-              type="text"
+            <select
               name="district"
+              id="district"
               value={form.district}
               onChange={handleChange}
-              placeholder="e.g. Lahore"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
-            />
+              required
+              className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-400 transition-all bg-gray-50 text-sm"
+            >
+              <option value="">Select district</option>
+              <option value="multan">Multan</option>
+              <option value="faisalabad">Faisalabad</option>
+              <option value="karachi">Karachi</option>
+              <option value="lahore">Lahore</option>
+              <option value="abbottabad">Abbottabad</option>
+              <option value="sheikhupura">Sheikhupura</option>
+              <option value="kasur">Kasur</option>
+              <option value="dgk">DGK</option>
+              <option value="jampur">Jampur</option>
+              <option value="layyah">Layyah</option>
+              <option value="ryk">RYK</option>
+              <option value="bhp">BHP</option>
+              <option value="khanewal">Khanewal</option>
+              <option value="sargodha">Sargodha</option>
+              <option value="chiniot">Chiniot</option>
+              <option value="peshawar">Peshawar</option>
+              <option value="charsadda">Charsadda</option>
+              <option value="mardan">Mardan</option>
+              <option value="nowshera">Nowshera</option>
+              <option value="swat">Swat</option>
+              <option value="sahiwal">Sahiwal</option>
+              <option value="timergara">Timergara</option>
+              <option value="burewala">Burewala</option>
+              <option value="bhakkar">Bhakkar</option>
+              <option value="jhang">Jhang</option>
+              <option value="toba">Toba</option>
+              <option value="gojra">Gojra</option>
+              <option value="gujranwala">Gujranwala</option>
+              <option value="sialkot">Sialkot</option>
+            </select>
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Full Adress/clinic Adress
@@ -273,7 +336,7 @@ export default function AddDoctorForm({ doctor }) {
               name="email"
               value={form.email}
               onChange={handleChange}
-              placeholder="e.g. 03001234567"
+              placeholder="e.g. @gmail.com"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
             />
           </div>

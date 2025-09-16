@@ -21,7 +21,7 @@ export default function HomePage() {
     try {
       const response = await axios.post(
         "/api/auth/login",
-        { email, password },
+        { email, password},
         { withCredentials: true }
       );
 

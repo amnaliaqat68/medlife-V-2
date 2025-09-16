@@ -31,6 +31,7 @@ export default function DoctorManagement() {
   const [userRole, setUserRole] = useState(null);
   const [showDrawer, setShowDrawer] = useState(false);
   const [editingDoc, setEditingDoc] = useState(null);
+
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -44,6 +45,11 @@ export default function DoctorManagement() {
         credentials: "include",
       });
       const data = await res.json();
+      if (!Array.isArray(data)) {
+        console.error("API did not return an array", data);
+        setDoctors([]);
+        return;
+      }
 
       if (res.ok) {
         setDoctors(data);
@@ -208,8 +214,8 @@ export default function DoctorManagement() {
               <div className="text-center text-red-600">
                 <p className="text-lg font-semibold">Error loading doctors</p>
                 <p className="text-sm">{error}</p>
-                <Button 
-                  onClick={fetchDoctors} 
+                <Button
+                  onClick={fetchDoctors}
                   className="mt-4 bg-blue-600 hover:bg-blue-700"
                 >
                   Try Again
@@ -218,168 +224,222 @@ export default function DoctorManagement() {
             </div>
           ) : (
             <Table className="min-w-full">
-            <TableHeader className="bg-gray-50">
-              <TableRow>
-                <TableHead className="px-3 py-3 font-semibold text-gray-700 text-sm text-center" style={{width: '60px'}}>
-                  #
-                </TableHead>
-                <TableHead className="px-3 py-3 font-semibold text-gray-700 text-sm" style={{width: '180px'}}>
-                  Doctor
-                </TableHead>
-                <TableHead className="px-3 py-3 font-semibold text-gray-700 text-sm" style={{width: '120px'}}>
-                  Speciality
-                </TableHead>
-                <TableHead className="px-3 py-3 font-semibold text-gray-700 text-sm" style={{width: '100px'}}>
-                  District
-                </TableHead>
-                <TableHead className="px-3 py-3 font-semibold text-gray-700 text-sm" style={{width: '140px'}}>
-                  Contact
-                </TableHead>
-                <TableHead className="hidden lg:table-cell px-3 py-3 font-semibold text-gray-700 text-sm" style={{width: '80px'}}>
-                  Group
-                </TableHead>
-                <TableHead className="hidden xl:table-cell px-3 py-3 font-semibold text-gray-700 text-sm" style={{width: '180px'}}>
-                  Address
-                </TableHead>
-                <TableHead className="hidden xl:table-cell px-3 py-3 font-semibold text-gray-700 text-sm text-right" style={{width: '120px'}}>
-                  Investment
-                </TableHead>
-                <TableHead className="hidden xl:table-cell px-3 py-3 font-semibold text-gray-700 text-sm text-center" style={{width: '80px'}}>
-                  Status
-                </TableHead>
-                <TableHead className="px-3 py-3 font-semibold text-gray-700 text-sm text-center" style={{width: '140px'}}>
-                  Actions
-                </TableHead>
-              </TableRow>
-            </TableHeader>
+              <TableHeader className="bg-gray-50">
+                <TableRow>
+                  <TableHead
+                    className="px-3 py-3 font-semibold text-gray-700 text-sm text-center"
+                    style={{ width: "60px" }}
+                  >
+                    #
+                  </TableHead>
+                  <TableHead
+                    className="px-3 py-3 font-semibold text-gray-700 text-sm"
+                    style={{ width: "180px" }}
+                  >
+                    Doctor
+                  </TableHead>
+                  <TableHead
+                    className="px-3 py-3 font-semibold text-gray-700 text-sm"
+                    style={{ width: "120px" }}
+                  >
+                    Speciality
+                  </TableHead>
+                  <TableHead
+                    className="px-3 py-3 font-semibold text-gray-700 text-sm"
+                    style={{ width: "100px" }}
+                  >
+                    District
+                  </TableHead>
+                  <TableHead
+                    className="px-3 py-3 font-semibold text-gray-700 text-sm"
+                    style={{ width: "140px" }}
+                  >
+                    Contact
+                  </TableHead>
+                  <TableHead
+                    className="hidden lg:table-cell px-3 py-3 font-semibold text-gray-700 text-sm"
+                    style={{ width: "80px" }}
+                  >
+                    Group
+                  </TableHead>
+                  <TableHead
+                    className="hidden xl:table-cell px-3 py-3 font-semibold text-gray-700 text-sm"
+                    style={{ width: "180px" }}
+                  >
+                    Address
+                  </TableHead>
+                  <TableHead
+                    className="hidden xl:table-cell px-3 py-3 font-semibold text-gray-700 text-sm text-right"
+                    style={{ width: "120px" }}
+                  >
+                    Investment
+                  </TableHead>
+                  <TableHead
+                    className="hidden xl:table-cell px-3 py-3 font-semibold text-gray-700 text-sm text-center"
+                    style={{ width: "80px" }}
+                  >
+                    Status
+                  </TableHead>
+                  <TableHead
+                    className="px-3 py-3 font-semibold text-gray-700 text-sm text-center"
+                    style={{ width: "140px" }}
+                  >
+                    Actions
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
 
-            <TableBody>
-              {filteredDoctors.map((doctor, idx) => (
-                <TableRow
-                  key={doctor._id}
-                  className={`transition-colors ${
-                    idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                  } hover:bg-purple-50`}
-                >
-                  {/* Serial Number */}
-                  <TableCell className="px-3 py-3 text-center" style={{width: '60px'}}>
-                    <span className="w-8 h-8 bg-purple-100 text-purple-800 rounded-full flex items-center justify-center text-sm font-bold mx-auto">
-                      {doctor.Number || `${idx + 1}`}
-                    </span>
-                  </TableCell>
-
-                  {/* Doctor */}
-                  <TableCell className="px-3 py-3" style={{width: '180px'}}>
-                    <div className="space-y-1">
-                      <p className="font-bold text-sm text-gray-900 truncate">
-                        {doctor.name}
-                      </p>
-                      <p className="text-xs text-gray-500 font-medium truncate">
-                        {doctor.qualification || "Medical Professional"}
-                      </p>
-                    </div>
-                  </TableCell>
-
-                  {/* Speciality */}
-                  <TableCell className="px-3 py-3" style={{width: '120px'}}>
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-purple-400 rounded-full flex-shrink-0"></div>
-                      <span className="text-sm font-medium text-gray-700 truncate">
-                        {doctor.speciality}
+              <TableBody>
+                {filteredDoctors.map((doctor, idx) => (
+                  <TableRow
+                    key={doctor._id}
+                    className={`transition-colors ${
+                      idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    } hover:bg-purple-50`}
+                  >
+                    {/* Serial Number */}
+                    <TableCell
+                      className="px-3 py-3 text-center"
+                      style={{ width: "60px" }}
+                    >
+                      <span className="w-8 h-8 bg-purple-100 text-purple-800 rounded-full flex items-center justify-center text-sm font-bold mx-auto">
+                        {doctor.Number || `${idx + 1}`}
                       </span>
-                    </div>
-                  </TableCell>
+                    </TableCell>
 
-                  {/* District */}
-                  <TableCell className="px-3 py-3" style={{width: '100px'}}>
-                    <span className="text-sm font-medium text-gray-700 truncate">
-                      {doctor.district}
-                    </span>
-                  </TableCell>
+                    {/* Doctor */}
+                    <TableCell className="px-3 py-3" style={{ width: "180px" }}>
+                      <div className="space-y-1">
+                        <p className="font-bold text-sm text-gray-900 truncate">
+                          {doctor.name}
+                        </p>
+                        <p className="text-xs text-gray-500 font-medium truncate">
+                          {doctor.qualification || "Medical Professional"}
+                        </p>
+                      </div>
+                    </TableCell>
 
-                  {/* Contact */}
-                  <TableCell className="px-3 py-3" style={{width: '140px'}}>
-                    <div className="space-y-1">
+                    {/* Speciality */}
+                    <TableCell className="px-3 py-3" style={{ width: "120px" }}>
                       <div className="flex items-center gap-1">
-                        <Phone className="w-3 h-3 text-gray-400 flex-shrink-0" />
-                        <span className="text-xs font-medium text-gray-700 truncate">
-                          {doctor.contact}
+                        <div className="w-2 h-2 bg-purple-400 rounded-full flex-shrink-0"></div>
+                        <span className="text-sm font-medium text-gray-700 truncate">
+                          {doctor.speciality}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Mail className="w-3 h-3 text-gray-400 flex-shrink-0" />
-                        <span className="text-xs text-gray-500 truncate">
-                          {doctor.email}
-                        </span>
+                    </TableCell>
+
+                    {/* District */}
+                    <TableCell className="px-3 py-3" style={{ width: "100px" }}>
+                      <span className="text-sm font-medium text-gray-700 truncate">
+                        {doctor.district}
+                      </span>
+                    </TableCell>
+
+                    {/* Contact */}
+                    <TableCell className="px-3 py-3" style={{ width: "140px" }}>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1">
+                          <Phone className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                          <span className="text-xs font-medium text-gray-700 truncate">
+                            {doctor.contact}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Mail className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                          <span className="text-xs text-gray-500 truncate">
+                            {doctor.email}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  </TableCell>
+                    </TableCell>
 
-                  {/* Group */}
-                  <TableCell className="hidden lg:table-cell px-3 py-3" style={{width: '80px'}}>
-                    <span className="text-sm font-medium text-gray-700 truncate">
-                      {doctor.group}
-                    </span>
-                  </TableCell>
+                    {/* Group */}
+                    <TableCell
+                      className="hidden lg:table-cell px-3 py-3"
+                      style={{ width: "80px" }}
+                    >
+                      <span className="text-sm font-medium text-gray-700 truncate">
+                        {doctor.group}
+                      </span>
+                    </TableCell>
 
-                  {/* Address */}
-                  <TableCell className="hidden xl:table-cell px-3 py-3" style={{width: '180px'}}>
-                    <div className="flex items-start gap-1">
-                      <MapPin className="w-3 h-3 text-gray-400 flex-shrink-0 mt-0.5" />
-                      <div className="text-xs text-gray-600 leading-tight break-words max-h-12 overflow-hidden">
-                        {doctor.address}
+                    {/* Address */}
+                    <TableCell
+                      className="hidden xl:table-cell px-3 py-3"
+                      style={{ width: "180px" }}
+                    >
+                      <div className="flex items-start gap-1">
+                        <MapPin className="w-3 h-3 text-gray-400 flex-shrink-0 mt-0.5" />
+                        <div className="text-xs text-gray-600 leading-tight break-words max-h-12 overflow-hidden">
+                          {doctor.address}
+                        </div>
                       </div>
-                    </div>
-                  </TableCell>
+                    </TableCell>
 
-                  {/* Investment */}
-                  <TableCell className="hidden xl:table-cell px-3 py-3 text-right" style={{width: '120px'}}>
-                    <div>
-                      <p className="text-sm font-bold text-gray-900">
-                        {doctor.investmentLastYear
-                          ? `₨ ${Number(doctor.investmentLastYear).toLocaleString()}`
-                          : "N/A"}
-                      </p>
-                      <p className="text-xs text-gray-500">Last Year</p>
-                    </div>
-                  </TableCell>
+                    {/* Investment */}
+                    <TableCell
+                      className="hidden xl:table-cell px-3 py-3 text-right"
+                      style={{ width: "120px" }}
+                    >
+                      <div>
+                        <p className="text-sm font-bold text-gray-900">
+                          {doctor.investmentLastYear
+                            ? `₨ ${Number(
+                                doctor.investmentLastYear
+                              ).toLocaleString()}`
+                            : "N/A"}
+                        </p>
+                        <p className="text-xs text-gray-500">Last Year</p>
+                      </div>
+                    </TableCell>
 
-                  {/* Status */}
-                  <TableCell className="hidden xl:table-cell px-3 py-3 text-center" style={{width: '80px'}}>
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(doctor.status)}`}>
-                      {doctor.status}
-                    </span>
-                  </TableCell>
+                    {/* Status */}
+                    <TableCell
+                      className="hidden xl:table-cell px-3 py-3 text-center"
+                      style={{ width: "80px" }}
+                    >
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                          doctor.status
+                        )}`}
+                      >
+                        {doctor.status}
+                      </span>
+                    </TableCell>
 
-                  {/* Actions */}
-                  <TableCell className="px-3 py-3 text-center" style={{width: '140px'}}>
-                    <div className="flex justify-center gap-2">
-                      {["admin", "gm"].includes(userRole) && (
+                    {/* Actions */}
+                    <TableCell
+                      className="px-3 py-3 text-center"
+                      style={{ width: "140px" }}
+                    >
+                      <div className="flex justify-center gap-2">
+                        {["admin", "gm"].includes(userRole) && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDelete(doctor._id)}
+                            className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 px-3 py-1 text-xs rounded-lg"
+                          >
+                            Delete
+                          </Button>
+                        )}
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleDelete(doctor._id)}
-                          className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 px-3 py-1 text-xs rounded-lg"
+                          onClick={() => {
+                            setEditingDoc(doctor);
+                            setShowDrawer(true);
+                          }}
+                          className="border-yellow-200 text-yellow-600 hover:bg-yellow-50 hover:border-yellow-300 px-3 py-1 text-xs rounded-lg"
                         >
-                          Delete
+                          Edit
                         </Button>
-                      )}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setEditingDoc(doctor);
-                          setShowDrawer(true);
-                        }}
-                        className="border-yellow-200 text-yellow-600 hover:bg-yellow-50 hover:border-yellow-300 px-3 py-1 text-xs rounded-lg"
-                      >
-                        Edit
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
             </Table>
           )}
         </div>

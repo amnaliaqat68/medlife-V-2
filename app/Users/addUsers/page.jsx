@@ -1,11 +1,11 @@
 "use client";
 
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import Select from "react-select";
 
 export default function AddUserpage() {
   const router = useRouter();
@@ -15,51 +15,81 @@ export default function AddUserpage() {
     email: "",
     password: "",
     designation: "",
-    area: "",
+    district: "",
     role: "SM",
   });
+  const areaOptions = [
+    { value: "multan", label: "Multan" },
+    { value: "faisalabad", label: "Faisalabad" },
+    { value: "karachi", label: "Karachi" },
+    { value: "lahore", label: "Lahore" },
+    { value: "abbottabad", label: "Abbottabad" },
+    { value: "sheikhupura", label: "Sheikhupura" },
+    { value: "kasur", label: "Kasur" },
+    { value: "dgk", label: "DGK" },
+    { value: "jampur", label: "Jampur" },
+    { value: "layyah", label: "Layyah" },
+    { value: "ryk", label: "RYK" },
+    { value: "bhp", label: "BHP" },
+    { value: "khanewal", label: "Khanewal" },
+    { value: "sargodha", label: "Sargodha" },
+    { value: "chiniot", label: "Chiniot" },
+    { value: "peshawar", label: "Peshawar" },
+    { value: "charsadda", label: "Charsadda" },
+    { value: "mardan", label: "Mardan" },
+    { value: "nowshera", label: "Nowshera" },
+    { value: "swat", label: "Swat" },
+    { value: "sahiwal", label: "Sahiwal" },
+    { value: "timergara", label: "Timergara" },
+    { value: "burewala", label: "Burewala" },
+    { value: "bhakkar", label: "Bhakkar" },
+    { value: "jhang", label: "Jhang" },
+    { value: "toba", label: "Toba" },
+    { value: "gojra", label: "Gojra" },
+    { value: "gujranwala", label: "Gujranwala" },
+    { value: "sialkot", label: "Sialkot" },
+  ];
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const payload = {
-    ...form,
-    role: form.designation.toLowerCase(), 
-  };
+    const payload = {
+      ...form,
+      role: form.designation.toLowerCase(),
+    };
 
-  try {
-    const res = await fetch("/api/auth/createUser", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-       credentials: "include",
-    });
-
-    const data = await res.json();
-
-    if (res.status === 201) {
-      toast.success("User registered successfully!");
-      setForm({
-        name: "",
-        phone: "",
-        email: "",
-        group:"",
-        password: "",
-        designation: "",
-        area: "",
-       
+    try {
+      const res = await fetch("/api/auth/createUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+        credentials: "include",
       });
-    } else {
-      toast.error(data.error || "Something went wrong");
+
+      const data = await res.json();
+
+      if (res.status === 201) {
+        toast.success("User registered successfully!");
+        setForm({
+          name: "",
+          phone: "",
+          email: "",
+          group: "",
+          password: "",
+          designation: "",
+          district: "",
+        });
+      } else {
+        toast.error(data.error || "Something went wrong");
+      }
+    } catch (err) {
+      console.error(err.message);
+      toast.error("Error submitting form");
     }
-  } catch (err) {
-    console.error(err.message);
-    toast.error("Error submitting form");
-  }
-};
-const fetchUsers = async () => {
+  };
+  const fetchUsers = async () => {
     try {
       const res = await fetch("/api/auth/getDSMusers", {
         method: "GET",
@@ -84,7 +114,6 @@ const fetchUsers = async () => {
           Create New User
         </h2>
         <form onSubmit={handleSubmit} className="space-y-3">
-           
           <div>
             <label
               htmlFor="name"
@@ -162,7 +191,7 @@ const fetchUsers = async () => {
               <option value="">Select Designation</option>
               <option value="dsm">DSM</option>
               <option value="gm">GM</option>
-               <option value="sm">SM</option>
+              <option value="sm">SM</option>
             </select>
           </div>
           <div className="mb-4">
@@ -185,59 +214,27 @@ const fetchUsers = async () => {
               <option value="">Select Group</option>
               <option value="venus">Venus</option>
               <option value="dynamic">Dynamic</option>
-               <option value="jupiter">Jupiter</option>
-                <option value="corporate">Corporate</option>
+              <option value="jupiter">Jupiter</option>
+              <option value="corporate">Corporate</option>
             </select>
           </div>
-
           <div className="mb-4">
-            <label
-              htmlFor="area"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Area
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Area (max 3)
             </label>
-            <select
-              name="area"
-              id="area"
-              value={form.area}
-              onChange={(e) =>
-                setForm({ ...form, [e.target.name]: e.target.value })
-              }
-              required
-              className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-400 transition-all bg-gray-50 text-sm"
-            >
-              <option value="">Select Area</option>
-              <option value="multan">Multan</option>
-              <option value="faisalabad">Faisalabad</option>
-              <option value="karachi">Karachi</option>
-              <option value="lahore">Lahore</option>
-              <option value="abbottabad">Abbottabad</option>
-              <option value="sheikhupura">Sheikhupura</option>
-              <option value="kasur">Kasur</option>
-              <option value="dgk">DGK</option>
-              <option value="jampur">Jampur</option>
-              <option value="layyah">Layyah</option>
-              <option value="ryk">RYK</option>
-              <option value="bhp">BHP</option>
-              <option value="khanewal">Khanewal</option>
-              <option value="sargodha">Sargodha</option>
-              <option value="chiniot">Chiniot</option>
-              <option value="peshawar">Peshawar</option>
-              <option value="charsadda">Charsadda</option>
-              <option value="mardan">Mardan</option>
-              <option value="nowshera">Nowshera</option>
-              <option value="swat">Swat</option>
-              <option value="sahiwal">Sahiwal</option>
-              <option value="timergara">Timergara</option>
-              <option value="burewala">Burewala</option>
-              <option value="bhakkar">Bhakkar</option>
-              <option value="jhang">Jhang</option>
-              <option value="toba">Toba</option>
-              <option value="gojra">Gojra</option>
-              <option value="gujranwala">Gujranwala</option>
-              <option value="sialkot">Sialkot</option>
-            </select>
+            <Select
+              options={areaOptions}
+              isMulti
+              value={areaOptions.filter((opt) =>
+                form.district.includes(opt.value)
+              )}
+              onChange={(selected) => {
+                if (selected.length <= 3) {
+                  setForm({ ...form, district: selected.map((s) => s.value) });
+                }
+              }}
+              className="text-sm"
+            />
           </div>
 
           <div>

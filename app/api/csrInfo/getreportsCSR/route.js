@@ -10,7 +10,7 @@ export async function GET() {
   try {
     const data = await CSRfom.find({ adminStatus: "completed" })
      
-      .populate("creatorId", "name area")
+      .populate("creatorId", "name district")
       .populate(
         "doctorId",
         "name speciality address brick district zone group designation qualification"

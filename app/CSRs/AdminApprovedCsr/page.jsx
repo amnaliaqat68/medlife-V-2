@@ -202,7 +202,7 @@ const Approvedpage = () => {
                         {csr.doctorId?.name || "N/A"}
                       </h3>
                       <p className="text-sm text-gray-500 font-medium">
-                        {csr.doctorId?.specialization || "General Practice"}
+                        {csr.doctorId?.speciality || "General Practice"}
                       </p>
                     </div>
 

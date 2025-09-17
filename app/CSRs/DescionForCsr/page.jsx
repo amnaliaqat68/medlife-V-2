@@ -5,7 +5,21 @@ import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Search, CheckCircle } from "lucide-react";
+import {
+  Search,
+  CheckCircle,
+  FileText,
+  Users,
+  TrendingUp,
+  User,
+  LogOut,
+  Phone,
+  Mail,
+  MapPin,
+  Edit,
+  Loader2,
+  Activity,
+} from "lucide-react";
 
 // ✅ Component
 const DecisionPage = () => {
@@ -120,7 +134,23 @@ const DecisionPage = () => {
 
       const res = await fetch(endpoint);
       const data = await res.json();
-      setCsrList(data);
+      if (res.ok) {
+        let filtered = [];
+
+        if (userRole === "sm") {
+          // Show only pending & submitted by DSM, exclude approved
+          filtered = data.filter(
+            (csr) => csr.smStatus === "pending" && csr.creatorId.role === "dsm"
+          );
+        } else if (userRole === "gm") {
+          // Show only those approved by SM but still pending for GM
+          filtered = data.filter(
+            (csr) => csr.smStatus === "approved" && csr.gmStatus === "pending"
+          );
+        }
+        setCsrList(filtered);
+      }
+      // setCsrList(data);
     };
 
     if (userRole) {
@@ -130,28 +160,33 @@ const DecisionPage = () => {
 
   return (
     <div className="min-h-screen w-full bg-blue-50 rounded-md">
-      <div className="relative bg-blue-900 rounded-2xl p-6  shadow flex items-center justify-evenly overflow-hidden">
-        <div className="absolute left-2 bottom-0 w-40 h-40">
-          <img
-            src="https://images.unsplash.com/vector-1751489957595-83d3e9fd5102?w=600&auto=format&fit=crop&q=60"
-            alt="Grass"
-            className="w-28 h-28 object-contain mt-14"
-          />
+      <div className="relative bg-gradient-to-r from-green-900 via-emerald-800 to-teal-800 rounded-2xl p-6 mb-6 overflow-hidden">
+        {/* Medical background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-4 left-4">
+            <CheckCircle className="w-16 h-16 text-white" />
+          </div>
+          <div className="absolute top-8 right-8">
+            <FileText className="w-12 h-12 text-white" />
+          </div>
+          <div className="absolute bottom-4 left-1/4">
+            <Activity className="w-14 h-14 text-white" />
+          </div>
+          <div className="absolute bottom-8 right-1/4">
+            <TrendingUp className="w-10 h-10 text-white" />
+          </div>
         </div>
 
-        <div className="relative z-10 text-white max-w-md ">
-          <h2 className="text-2xl font-bold mb-2">REVIEW & APPROVE CSRs</h2>
-          <p className="text-indigo-100 mb-4"></p>
-        </div>
-
-        <div className="absolute right-4 bottom-0 w-40 h-40">
-          <img
-            src="/csrform.png"
-            alt="Doctors"
-            className="w-full h-full object-contain mt-6"
-          />
+        <div className="relative z-10 text-white">
+          <h1 className="text-4xl font-bold mb-3">Approved CSR Management</h1>
+          <p className="text-green-100 text-lg leading-relaxed max-w-2xl">
+            Review and manage approved Customer Service Requests with
+            comprehensive tracking, execution workflows, and detailed analytics
+            for healthcare service delivery.
+          </p>
         </div>
       </div>
+
       <main className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-6 py-2 rounded-md">
         <Tabs defaultValue="csrs" className="space-y-6 rounded-md">
           <TabsContent value="csrs">
@@ -166,35 +201,56 @@ const DecisionPage = () => {
                       </p>
                     </div>
                   ) : (
-                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 rounded-md">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       {csrList.map((csr) => (
                         <div
                           key={csr._id}
-                          className="rounded-xl border bg-white shadow hover:shadow-lg transition p-5 flex flex-col"
+                          className="relative overflow-hidden bg-white border-0 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 group rounded-2xl"
                         >
-                          {/* Header */}
-                          <div className="mb-4">
-                            <h3 className="text-lg font-semibold text-gray-900">
-                              {csr.doctorId?.name || "Unknown Doctor"}
-                            </h3>
-                            <p className="text-sm text-gray-500">
-                              Created by: {csr.creatorId?.name || "N/A"}
-                            </p>
-                          </div>
+                          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-emerald-400/5 to-teal-500/10"></div>
+                          <div className="p-6 relative">
+                            {/* Header */}
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
+                                <CheckCircle className="w-6 h-6 text-white" />
+                              </div>
+                              <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">
+                                Approved
+                              </span>
+                            </div>
+                            {/* Doctor Info */}
+                            <div className="space-y-2 mb-4">
+                              <h3 className="text-xl font-bold text-gray-800">
+                                {csr.doctorId?.name || "N/A"}
+                              </h3>
+                              <p className="text-sm text-gray-500 font-medium">
+                                {csr.doctorId?.speciality || "General Practice"}
+                              </p>
+                            </div>
+                            <div className="mb-4 p-3 bg-gray-50 rounded-xl">
+                              <p className="text-xs text-gray-500 mb-1">
+                                Created by
+                              </p>
+                              <p className="text-sm font-semibold text-gray-700">
+                                {csr.creatorId?.name || "N/A"}
+                              </p>
+                            </div>
 
-                          {/* Info */}
-                          <p className="mb-4 text-sm">
-                            <span className="font-medium text-gray-700">
-                              Commitment:
-                            </span>{" "}
-                            <span className="text-blue-600 font-semibold">
-                              {csr.Business?.[0]?.exactCost || 0}
-                            </span>
-                          </p>
+                            {/* Business Value */}
+                            <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-100">
+                              <p className="text-xs font-medium text-blue-600 mb-1">
+                                Activity Cost
+                              </p>
+                              <p className="text-lg font-bold text-blue-900">
+                                ₨{" "}
+                                {csr.Business?.[0]?.exactCost?.toLocaleString() ||
+                                  0}
+                              </p>
+                            </div>
 
-                          {/* Actions */}
-                          <div className="flex flex-wrap gap-2 mt-auto">
-                            {/* {approvedCSRIds.includes(csr._id) ? (
+                            {/* Actions */}
+                            <div className="flex flex-wrap gap-2 mt-auto">
+                              {/* {approvedCSRIds.includes(csr._id) ? (
                               <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
                                 ✅ Approved
                               </span>
@@ -213,43 +269,44 @@ const DecisionPage = () => {
                               </Button>
                             )} */}
 
-                            {csr[`${userRole}Status`] === "approved" ? (
-                              <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
-                                ✅ Approved
-                              </span>
-                            ) : (
+                              {csr[`${userRole}Status`] === "approved" ? (
+                                <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
+                                  ✅ Approved
+                                </span>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  disabled={approvingCSR === csr._id}
+                                  onClick={() =>
+                                    handleDecision(csr._id, "approved")
+                                  }
+                                  className="bg-green-600 hover:bg-green-700 text-black rounded-md"
+                                >
+                                  {approvingCSR === csr._id
+                                    ? "Approving..."
+                                    : "Approve"}
+                                </Button>
+                              )}
+
                               <Button
                                 size="sm"
                                 disabled={approvingCSR === csr._id}
                                 onClick={() =>
-                                  handleDecision(csr._id, "approved")
+                                  handleDecision(csr._id, "rejected")
                                 }
-                                className="bg-green-600 hover:bg-green-700 text-black rounded-md"
+                                className="bg-red-600 hover:bg-green-400 text-black rounded-md shadow-2xl"
                               >
-                                {approvingCSR === csr._id
-                                  ? "Approving..."
-                                  : "Approve"}
+                                Reject
                               </Button>
-                            )}
 
-                            <Button
-                              size="sm"
-                              disabled={approvingCSR === csr._id}
-                              onClick={() =>
-                                handleDecision(csr._id, "rejected")
-                              }
-                              className="bg-red-600 hover:bg-green-400 text-black rounded-md shadow-2xl"
-                            >
-                              Reject
-                            </Button>
-
-                            <Button
-                              size="sm"
-                              onClick={() => setSelectedCSR(csr)}
-                              className="bg-white text-black rounded-md border-2 border-black"
-                            >
-                              View Details
-                            </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => setSelectedCSR(csr)}
+                                className="bg-white text-black rounded-md border-2 border-black"
+                              >
+                                View Details
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -324,7 +381,7 @@ const DecisionPage = () => {
                   </p>
                   <p>
                     <strong>District:</strong>{" "}
-                    {selectedCSR.creatorId?.district|| "N/A"}
+                    {selectedCSR.creatorId?.district || "N/A"}
                   </p>
                   <p>
                     <strong> FE/MIO/SMIO:</strong>{" "}

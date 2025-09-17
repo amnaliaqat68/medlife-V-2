@@ -96,13 +96,14 @@ const Approvedpage = () => {
         const res = await fetch("/api/csrInfo/getadminCSR");
         const data = await res.json();
         if (res.ok) {
-        // ✅ Only keep CSRs approved by GM but not executed by Admin
-        const filtered = data.filter(
-          (csr) => csr.gmStatus === "approved" && csr.adminStatus === "pending"
-        );
+          // ✅ Only keep CSRs approved by GM but not executed by Admin
+          const filtered = data.filter(
+            (csr) =>
+              csr.gmStatus === "approved" && csr.adminStatus === "pending"
+          );
 
-        setCsrList(filtered);
-      }
+          setCsrList(filtered);
+        }
       } catch (error) {
         console.error("Error fetching CSR:", error);
       } finally {
@@ -162,8 +163,9 @@ const Approvedpage = () => {
                 Approved CSR Management
               </h1>
               <p className="text-green-100 text-lg leading-relaxed max-w-2xl">
-                Review and manage approved Customer Service Requests with comprehensive tracking, 
-                execution workflows, and detailed analytics for healthcare service delivery.
+                Review and manage approved Customer Service Requests with
+                comprehensive tracking, execution workflows, and detailed
+                analytics for healthcare service delivery.
               </p>
             </div>
           </div>
@@ -214,33 +216,35 @@ const Approvedpage = () => {
                       </p>
                     </div>
 
-                  {/* Business Value */}
-                  <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-100">
-                    <p className="text-xs font-medium text-blue-600 mb-1">Activity Cost</p>
-                    <p className="text-lg font-bold text-blue-900">
-                      ₨ {csr.Business?.[0]?.exactCost?.toLocaleString() || 0}
-                    </p>
-                  </div>
+                    {/* Business Value */}
+                    <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-100">
+                      <p className="text-xs font-medium text-blue-600 mb-1">
+                        Activity Cost
+                      </p>
+                      <p className="text-lg font-bold text-blue-900">
+                        ₨ {csr.Business?.[0]?.exactCost?.toLocaleString() || 0}
+                      </p>
+                    </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-3">
-                    <Button
-                      onClick={() => {
-                        console.log("Navigating to:", csr._id);
-                        router.push(`/CSRs/executeForm/${csr._id}`);
-                      }}
-                      className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
-                    >
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Execute
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => setSelectedCSR(csr)}
-                      className="px-4 border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                    >
-                      <FileText className="w-4 h-4" />
-                    </Button>
+                    {/* Action Buttons */}
+                    <div className="flex gap-3">
+                      <Button
+                        onClick={() => {
+                          console.log("Navigating to:", csr._id);
+                          router.push(`/CSRs/executeForm/${csr._id}`);
+                        }}
+                        className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+                      >
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Execute
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setSelectedCSR(csr)}
+                        className="px-4 border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                      >
+                        <FileText className="w-4 h-4" />
+                      </Button>
                     </div>
                   </div>
                 </div>

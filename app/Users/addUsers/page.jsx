@@ -264,6 +264,7 @@ export default function AddUserpage({ user, onSuccess }) {
                 }
               }}
               className="text-sm"
+              required
             />
           </div>
 

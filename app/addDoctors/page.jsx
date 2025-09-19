@@ -114,6 +114,7 @@ export default function AddDoctorForm({ doctor, onSuccess }) {
               name="name"
               value={form.name}
               onChange={handleChange}
+              required
               placeholder="e.g. Dr. Ahmad Khan"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
             />
@@ -129,6 +130,7 @@ export default function AddDoctorForm({ doctor, onSuccess }) {
               name="speciality"
               value={form.speciality}
               onChange={handleChange}
+              required
               placeholder="e.g. Cardiologist"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
             />
@@ -142,6 +144,7 @@ export default function AddDoctorForm({ doctor, onSuccess }) {
               name="qualification"
               value={form.qualification}
               onChange={handleChange}
+              required
               placeholder="e.g. Cardiologist"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
             />
@@ -155,6 +158,7 @@ export default function AddDoctorForm({ doctor, onSuccess }) {
               name="designation"
               value={form.designation}
               onChange={handleChange}
+              required
               placeholder="e.g. Cardiologist"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
             />
@@ -218,6 +222,7 @@ export default function AddDoctorForm({ doctor, onSuccess }) {
               name="address"
               value={form.address}
               onChange={handleChange}
+              required
               placeholder="Full Adress..."
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
             />
@@ -250,6 +255,7 @@ export default function AddDoctorForm({ doctor, onSuccess }) {
               name="brick"
               value={form.brick}
               onChange={handleChange}
+              required
               placeholder="brick..."
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
             />
@@ -263,6 +269,7 @@ export default function AddDoctorForm({ doctor, onSuccess }) {
               name="zone"
               value={form.zone}
               onChange={handleChange}
+              required
               placeholder="zone..."
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
             />
@@ -277,6 +284,7 @@ export default function AddDoctorForm({ doctor, onSuccess }) {
               name="status"
               value={form.status}
               onChange={handleChange}
+              required
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
             >
               <option value="active">Active</option>
@@ -293,6 +301,7 @@ export default function AddDoctorForm({ doctor, onSuccess }) {
               name="investmentLastYear"
               value={form.investmentLastYear}
               onChange={handleChange}
+              required
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
             />
           </div>
@@ -307,6 +316,7 @@ export default function AddDoctorForm({ doctor, onSuccess }) {
               name="contact"
               value={form.contact}
               onChange={handleChange}
+              required
               placeholder="e.g. 03001234567"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 focus:outline-none"
             />

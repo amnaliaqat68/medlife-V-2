@@ -35,7 +35,7 @@ import Completedpage from "../CSRs/AdminCompletedCsr/page";
 import Approvedpage from "../CSRs/AdminApprovedCsr/page";
 import Reportpage from "../FilterReport/Reports/page";
 
-function DashboardContent  () {
+function DashboardContent() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [role, setRole] = useState("");
@@ -903,15 +903,12 @@ function DashboardContent  () {
       </main>
     </div>
   );
-};
+}
 
-
-
-export default function UniDashboardpage () {
+export default function UniDashboardpage() {
   return (
     <Suspense fallback={<p>Loading filters...</p>}>
-      < DashboardContent />
+      <DashboardContent />
     </Suspense>
   );
 }
-

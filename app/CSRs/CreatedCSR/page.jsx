@@ -12,6 +12,9 @@ export default function CSRForm({ doctorId }) {
   const [doctorList, setDoctorList] = useState([]);
   const [isSearchable, setIsSearchable] = useState(true);
   const [file, setFile] = useState(null);
+  const [report, setReports] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [completedCSR, setCompletedCSR] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [uploadedUrl, setUploadedUrl] = useState("");
   const [formData, setFormData] = useState({
@@ -35,9 +38,9 @@ export default function CSRForm({ doctorId }) {
       {
         product: "",
         strength: "",
-        presentUnits: "",
-        expectedUnits: "",
-        additionUnits: "",
+        presentUnits: 0,
+        expectedUnits: 0,
+        additionUnits: 0,
       },
     ],
     Business: [
@@ -201,6 +204,9 @@ export default function CSRForm({ doctorId }) {
   const handleProductChange = (index, field, value) => {
     const updated = [...formData.products];
     updated[index][field] = value;
+    const present = Number(updated[index].presentUnits) || 0;
+    const expected = Number(updated[index].expectedUnits) || 0;
+    updated[index].additionUnits = expected - present;
     setFormData({ ...formData, products: updated });
   };
 
@@ -337,6 +343,43 @@ export default function CSRForm({ doctorId }) {
     setFile(null);
     setUploadedUrl("");
   };
+  useEffect(() => {
+    const fetchReports = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/csrInfo/getreportsCSR", {
+          credentials: "include",
+        });
+
+        const data = await res.json();
+        console.log("Fetched CSR Reports:", data);
+
+        // 🔥 Transform each CSR to include total investment
+        const updatedReports = data.map((csr) => {
+          const lastYear = csr.Business?.[0]?.investmentLastYear || 0;
+          const cost = csr.Business?.[0]?.exactCost || 0;
+
+          return {
+            ...csr,
+            Business: [
+              {
+                ...csr.Business?.[0],
+                totalInvestment: lastYear + cost, // new field
+              },
+            ],
+          };
+        });
+
+        setReports(updatedReports);
+      } catch (err) {
+        console.error("Fetch failed", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReports();
+  }, []);
 
   // ✅ Fetch Doctors on Load
   useEffect(() => {
@@ -360,6 +403,7 @@ export default function CSRForm({ doctorId }) {
     };
     fetchDoctors();
   }, []);
+  //
 
   // ✅ File Upload Input
   const fileUploadSection = (
@@ -534,7 +578,8 @@ export default function CSRForm({ doctorId }) {
                         {
                           ...prev.Business?.[0],
                           investmentLastYear:
-                            selectedDoctor.investmentLastYear || "",
+                            (Number(selectedDoctor.investmentLastYear) || 0) +
+                            (Number(prev.Business?.[0]?.exactCost) || 0), 
                         },
                       ],
                     }));
@@ -743,8 +788,8 @@ export default function CSRForm({ doctorId }) {
                     "#",
                     "Product",
                     "Strength",
-                    "Present",
                     "Expected",
+                    "Present",
                     "Additional",
                     "Action",
                   ].map((header) => (
@@ -759,116 +804,145 @@ export default function CSRForm({ doctorId }) {
                 </tr>
               </thead>
               <tbody>
-                {formData.products.map((item, index) => (
-                  <tr
-                    key={index}
-                    className={`${
-                      index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                    } hover:bg-gray-100 print:bg-white`}
-                  >
-                    <td className="border px-4 py-3 print:border-black">
-                      {index + 1}
-                    </td>
+                {formData.products.map((item, index) => {
+                  const additionUnits =
+                    (item.expectedUnits || 0) - (item.presentUnits || 0);
 
-                    <td className="border px-4 py-2 print:border-black">
-                      <select
-                        value={item.product}
-                        onChange={(e) =>
-                          handleProductChange(index, "product", e.target.value)
-                        }
-                        className="w-full rounded-md border border-gray-300 px-3 py-2
-                  focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition shadow-sm print:border-gray-400 print:shadow-none"
-                        required
-                      >
-                        <option value="" disabled>
-                          Select Product
-                        </option>
-                        {productsList.map((p, idx) => (
-                          <option key={idx} value={p}>
-                            {p}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
+                  return (
+                    <tr
+                      key={index}
+                      className={`${
+                        index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                      } hover:bg-gray-100 print:bg-white`}
+                    >
+                      <td className="border px-4 py-3 print:border-black">
+                        {index + 1}
+                      </td>
 
-                    <td className="border px-4 py-2 print:border-black">
-                      <select
-                        value={item.strength}
-                        onChange={(e) =>
-                          handleProductChange(index, "strength", e.target.value)
-                        }
-                        className="w-full rounded-md border border-gray-300 px-3 py-2
-                  focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition shadow-sm print:border-gray-400 print:shadow-none"
-                        required
-                      >
-                        <option value="" disabled>
-                          Select Strength
-                        </option>
-                        {[
-                          "50mg",
-                          "75mg",
-                          "100mg",
-                          "150mg",
-                          "250mg",
-                          "500mg",
-                          "600mg",
-                          "750mg",
-                          "900mg",
-                          "1050mg",
-                          "600mcg",
-                          "1000mcg",
-                          "1g",
-                          "2g",
-                          "240ml",
-                          "300ml",
-                          "Custom",
-                        ].map((s) => (
-                          <option key={s} value={s}>
-                            {s}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-
-                    {["presentUnits", "expectedUnits", "additionUnits"].map(
-                      (field) => (
-                        <td
-                          key={field}
-                          className="border px-4 py-2 print:border-black"
+                      {/* Product */}
+                      <td className="border px-4 py-2 print:border-black">
+                        <select
+                          value={item.product}
+                          onChange={(e) =>
+                            handleProductChange(
+                              index,
+                              "product",
+                              e.target.value
+                            )
+                          }
+                          className="w-full rounded-md border border-gray-300 px-3 py-2
+              focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition shadow-sm print:border-gray-400 print:shadow-none"
                         >
-                          <input
-                            type="number"
-                            min={0}
-                            max={10000}
-                            value={item[field]}
-                            onChange={(e) =>
-                              handleProductChange(
-                                index,
-                                field,
-                                Number(e.target.value)
-                              )
-                            }
-                            className="w-full rounded-md border border-gray-300 px-3 py-2
-                    focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition print:border-gray-400 print:shadow-none"
-                            placeholder="0"
-                            required
-                          />
-                        </td>
-                      )
-                    )}
+                          <option value="" disabled>
+                            Select Product
+                          </option>
+                          {productsList.map((p, idx) => (
+                            <option key={idx} value={p}>
+                              {p}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
 
-                    <td className="border px-4 py-2 text-center print:border-black print:hidden">
-                      <button
-                        type="button"
-                        onClick={() => removeProduct(index)}
-                        className="text-red-600 hover:text-red-800 font-semibold transition"
-                        aria-label={`Remove product row ${index + 1}`}
-                      >
-                        <Trash2 size={20} className="text-red-500" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      {/* Strength */}
+                      <td className="border px-4 py-2 print:border-black">
+                        <select
+                          value={item.strength}
+                          onChange={(e) =>
+                            handleProductChange(
+                              index,
+                              "strength",
+                              e.target.value
+                            )
+                          }
+                          className="w-full rounded-md border border-gray-300 px-3 py-2
+              focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition shadow-sm print:border-gray-400 print:shadow-none"
+                        >
+                          <option value="" disabled>
+                            Select Strength
+                          </option>
+                          {[
+                            "50mg",
+                            "75mg",
+                            "100mg",
+                            "150mg",
+                            "250mg",
+                            "500mg",
+                            "600mg",
+                            "750mg",
+                            "900mg",
+                            "1050mg",
+                            "600mcg",
+                            "1000mcg",
+                            "1g",
+                            "2g",
+                            "240ml",
+                            "300ml",
+                            "Custom",
+                          ].map((s) => (
+                            <option key={s} value={s}>
+                              {s}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+
+                      {/* Present Units */}
+                      <td className="border px-4 py-2 print:border-black">
+                        <input
+                          type="number"
+                          min={0}
+                          value={item.presentUnits || ""}
+                          onChange={(e) =>
+                            handleProductChange(
+                              index,
+                              "presentUnits",
+                              Number(e.target.value)
+                            )
+                          }
+                          className="w-full rounded-md border border-gray-300 px-3 py-2
+              focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition print:border-gray-400 print:shadow-none"
+                          placeholder="0"
+                        />
+                      </td>
+
+                      {/* Expected Units */}
+                      <td className="border px-4 py-2 print:border-black">
+                        <input
+                          type="number"
+                          min={0}
+                          value={item.expectedUnits || ""}
+                          onChange={(e) =>
+                            handleProductChange(
+                              index,
+                              "expectedUnits",
+                              Number(e.target.value)
+                            )
+                          }
+                          className="w-full rounded-md border border-gray-300 px-3 py-2
+              focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition print:border-gray-400 print:shadow-none"
+                          placeholder="0"
+                        />
+                      </td>
+
+                      {/* Addition (calculated only, no input) */}
+                      <td className="border px-4 py-2 text-center font-semibold print:border-black">
+                        {additionUnits}
+                      </td>
+
+                      {/* Action */}
+                      <td className="border px-4 py-2 text-center print:border-black">
+                        <button
+                          type="button"
+                          onClick={() => removeProduct(index)}
+                          className="text-red-600 hover:underline"
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -966,7 +1040,7 @@ export default function CSRForm({ doctorId }) {
             {[
               { label: "Required Date", name: "requiredDate", type: "date" },
               { label: "Exact Cost", name: "exactCost" },
-              { label: "CSR By HO", name: "byHo" },
+              { label: "Activity Type", name: "byHo", type: "select" },
               { label: "ROI %", name: "roi" },
               {
                 label: "Expected Total Business (Value)",
@@ -985,21 +1059,50 @@ export default function CSRForm({ doctorId }) {
                 >
                   {label}
                 </label>
-                <input
-                  type={type || "text"}
-                  id={name}
-                  name={name}
-                  value={formData.Business?.[0]?.[name] || ""}
-                  onChange={(e) =>
-                    handleBusinessChange(0, name, e.target.value)
-                  }
-                  className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900
-            placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-            transition print:border-gray-400 print:shadow-none"
-                  placeholder={
-                    type === "date" ? "" : `Enter ${label.toLowerCase()}`
-                  }
-                />
+                {type === "select" ? (
+                  <select
+                    id={name}
+                    name={name}
+                    value={formData.Business?.[0]?.[name] || ""}
+                    onChange={(e) =>
+                      handleBusinessChange(0, name, e.target.value)
+                    }
+                    className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900
+        shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+        transition print:border-gray-400 print:shadow-none"
+                  >
+                    <option value="">Select activity</option>
+                    <option value="cashactivity">Cash Activity</option>
+                    <option value="account">Acc.Transfer</option>
+                    <option value="presentation">Ward Presentation</option>
+                    <option value="hotel">Hotel Stay</option>
+                    <option value="travelling">Travelling</option>
+                    <option value="lunch">Lunch/Dinner</option>
+                    <option value="workshop">Workshop</option>
+                    <option value="discount">Discount Share</option>
+                    <option value="fees">Registration/Fees</option>
+                    <option value="equipment">Medical Equipment</option>
+                    <option value="books">Medical Books</option>
+                    <option value="renovation">Clinical Renovations</option>
+                    <option value="others">Others</option>
+                  </select>
+                ) : (
+                  <input
+                    type={type || "text"}
+                    id={name}
+                    name={name}
+                    value={formData.Business?.[0]?.[name] || ""}
+                    onChange={(e) =>
+                      handleBusinessChange(0, name, e.target.value)
+                    }
+                    className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900
+        placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+        transition print:border-gray-400 print:shadow-none"
+                    placeholder={
+                      type === "date" ? "" : `Enter ${label.toLowerCase()}`
+                    }
+                  />
+                )}
               </div>
             ))}
 
@@ -1277,6 +1380,11 @@ export default function CSRForm({ doctorId }) {
               handleUpload(selectedFile);
             }}
           />
+          {file && (
+            <p className="mt-2 text-sm text-gray-600">
+              Selected file: <span className="font-medium">{file.name}</span>
+            </p>
+          )}
         </section>
 
         {/* Submit */}

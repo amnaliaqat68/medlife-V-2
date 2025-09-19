@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import connectDB from "../../../config/db.js";
+import addDoctor from "@/app/model/addDoctor.js";
 import CSRform from "../../../model/CSRfom.js";
 
 export async function POST(req) {
@@ -21,6 +22,7 @@ export async function POST(req) {
 
     const body = await req.json();
     console.log("Received payload in backend:", body);
+    const doctor = await addDoctor.findById(body.doctorId);
 
     const lastCSR = await CSRform.findOne().sort({ csrNumber: -1 });
     const lastNumber =
@@ -30,7 +32,12 @@ export async function POST(req) {
     const newCSR = new CSRform({
       ...body,
       creatorId,
-      filePath: req.body.filePath,
+       Business: [
+      {
+        ...body.Business[0],
+        investmentLastYear: doctor ? doctor.investmentLastYear : 0, 
+      },
+    ],
       csrNumber: nextCsrNumber,
     });
     const saved = await newCSR.save();

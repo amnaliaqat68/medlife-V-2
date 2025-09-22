@@ -38,7 +38,6 @@ const CSRList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState(null);
   const router = useRouter();
-
   const [selectedCSR, setSelectedCSR] = useState(null);
 
   const userRole = "sm";
@@ -55,7 +54,7 @@ const CSRList = () => {
       try {
         const res = await fetch("/api/csrInfo/getCSR");
         if (!res.ok) throw new Error("Failed to fetch CSR data");
-        
+
         const data = await res.json();
         console.log("Fetched CSR Data:", data);
         setCsrList(data);
@@ -117,8 +116,9 @@ const CSRList = () => {
             Customer Service Request Database
           </h1>
           <p className="text-blue-100 text-lg leading-relaxed max-w-2xl">
-            Comprehensive medical service request management system for tracking patient care, 
-            medication requests, and healthcare provider coordination.
+            Comprehensive medical service request management system for tracking
+            patient care, medication requests, and healthcare provider
+            coordination.
           </p>
         </div>
       </div>
@@ -130,8 +130,12 @@ const CSRList = () => {
                 <FileText className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-800">Medical Service Requests</h2>
-                <p className="text-sm text-gray-600">Manage and track all CSR submissions</p>
+                <h2 className="text-xl font-bold text-gray-800">
+                  Medical Service Requests
+                </h2>
+                <p className="text-sm text-gray-600">
+                  Manage and track all CSR submissions
+                </p>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
@@ -145,7 +149,9 @@ const CSRList = () => {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-600">Total:</span>
+                <span className="text-sm font-medium text-gray-600">
+                  Total:
+                </span>
                 <Badge className="bg-blue-100 text-blue-800 font-bold">
                   {filteredCSRs.length} CSRs
                 </Badge>
@@ -164,137 +170,141 @@ const CSRList = () => {
           ) : (
             <div className="overflow-x-auto">
               <Table className="w-full border rounded-lg shadow-sm">
-              <TableHeader className="bg-gray-50">
-                <TableRow>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-16 text-center">
-                    #
-                  </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-48">
-                    Doctor
-                  </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-32">
-                    District
-                  </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-56">
-                    Medicine
-                  </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-32 text-right">
-                    Active Cost
-                  </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-28 text-center">
-                    Status
-                  </TableHead>
-                  <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-32 text-center">
-                    View
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-
-              <TableBody>
-                {filteredCSRs.map((csr, idx) => (
-                  <TableRow
-                    key={csr._id}
-                    className={`transition-colors ${
-                      idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                    } hover:bg-indigo-50`}
-                  >
-                    {/* Serial Number */}
-                    <TableCell className="px-4 py-3 w-16 text-center">
-                      <span className="w-8 h-8 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-sm font-bold mx-auto">
-                        {csr.Number || `${idx + 1}`}
-                      </span>
-                    </TableCell>
-
-                    {/* Doctor */}
-                    <TableCell className="px-4 py-3 w-48">
-                      <div className="space-y-1">
-                        <p className="font-semibold text-sm text-gray-900 truncate">
-                          {csr.doctorId?.name || "N/A"}
-                        </p>
-                        <p className="text-xs text-gray-500 font-medium truncate">
-                          {csr.doctorId?.speciality || "General Practice"}
-                        </p>
-                      </div>
-                    </TableCell>
-
-                    {/* District */}
-                    <TableCell className="px-4 py-3 w-32">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-blue-400 rounded-full flex-shrink-0"></div>
-                        <span className="text-sm font-medium text-gray-700 truncate">
-                          {csr.doctorId?.district || "N/A"}
-                        </span>
-                      </div>
-                    </TableCell>
-
-                    {/* Medicine */}
-                    <TableCell className="px-4 py-3 w-56">
-                      {csr.products?.length > 0 ? (
-                        <div className="space-y-1">
-                          {csr.products.slice(0, 2).map((product, index) => (
-                            <div
-                              key={index}
-                              className="inline-flex items-center bg-blue-50 text-blue-700 px-2 py-1 rounded-md mr-1 mb-1"
-                            >
-                              <span className="text-xs font-medium truncate max-w-32">
-                                {product.product}
-                              </span>
-                            </div>
-                          ))}
-                          {csr.products.length > 2 && (
-                            <div className="text-xs text-gray-500 font-medium">
-                              +{csr.products.length - 2} more
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <span className="text-sm text-gray-400 italic">No Products</span>
-                      )}
-                    </TableCell>
-
-                    {/* Active Cost */}
-                    <TableCell className="px-4 py-3 w-32 text-right">
-                      <div>
-                        <p className="text-sm font-bold text-gray-900">
-                          {csr.Business?.[0]?.exactCost
-                            ? `₨ ${Number(csr.Business[0].exactCost).toLocaleString()}`
-                            : "N/A"}
-                        </p>
-                        <p className="text-xs text-gray-500">Total Cost</p>
-                      </div>
-                    </TableCell>
-
-                    {/* Status */}
-                    <TableCell className="px-4 py-3 w-28 text-center">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          getOverallStatus(csr) === "Approved"
-                            ? "bg-green-100 text-green-800"
-                            : getOverallStatus(csr) === "Pending"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : getOverallStatus(csr) === "Completed"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {getOverallStatus(csr)}
-                      </span>
-                    </TableCell>
-
-                    {/* View Button */}
-                    <TableCell className="px-4 py-3 w-32 text-center">
-                      <Button
-                        size="sm"
-                        className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-sm px-4 py-2 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
-                        onClick={() => setSelectedCSR(csr)}
-                      >
-                        View Details
-                      </Button>
-                    </TableCell>
+                <TableHeader className="bg-gray-50">
+                  <TableRow>
+                    <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-16 text-center">
+                      #
+                    </TableHead>
+                    <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-48">
+                      Doctor
+                    </TableHead>
+                    <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-32">
+                      District
+                    </TableHead>
+                    <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-56">
+                      Medicine
+                    </TableHead>
+                    <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-32 text-right">
+                      Active Cost
+                    </TableHead>
+                    <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-28 text-center">
+                      Status
+                    </TableHead>
+                    <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-32 text-center">
+                      View
+                    </TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+
+                <TableBody>
+                  {filteredCSRs.map((csr, idx) => (
+                    <TableRow
+                      key={csr._id}
+                      className={`transition-colors ${
+                        idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                      } hover:bg-indigo-50`}
+                    >
+                      {/* Serial Number */}
+                      <TableCell className="px-4 py-3 w-16 text-center">
+                        <span className="w-8 h-8 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-sm font-bold mx-auto">
+                          {csr.Number || `${idx + 1}`}
+                        </span>
+                      </TableCell>
+
+                      {/* Doctor */}
+                      <TableCell className="px-4 py-3 w-48">
+                        <div className="space-y-1">
+                          <p className="font-semibold text-sm text-gray-900 truncate">
+                            {csr.doctorId?.name || "N/A"}
+                          </p>
+                          <p className="text-xs text-gray-500 font-medium truncate">
+                            {csr.doctorId?.speciality || "General Practice"}
+                          </p>
+                        </div>
+                      </TableCell>
+
+                      {/* District */}
+                      <TableCell className="px-4 py-3 w-32">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-400 rounded-full flex-shrink-0"></div>
+                          <span className="text-sm font-medium text-gray-700 truncate">
+                            {csr.doctorId?.district || "N/A"}
+                          </span>
+                        </div>
+                      </TableCell>
+
+                      {/* Medicine */}
+                      <TableCell className="px-4 py-3 w-56">
+                        {csr.products?.length > 0 ? (
+                          <div className="space-y-1">
+                            {csr.products.slice(0, 2).map((product, index) => (
+                              <div
+                                key={index}
+                                className="inline-flex items-center bg-blue-50 text-blue-700 px-2 py-1 rounded-md mr-1 mb-1"
+                              >
+                                <span className="text-xs font-medium truncate max-w-32">
+                                  {product.product}
+                                </span>
+                              </div>
+                            ))}
+                            {csr.products.length > 2 && (
+                              <div className="text-xs text-gray-500 font-medium">
+                                +{csr.products.length - 2} more
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-400 italic">
+                            No Products
+                          </span>
+                        )}
+                      </TableCell>
+
+                      {/* Active Cost */}
+                      <TableCell className="px-4 py-3 w-32 text-right">
+                        <div>
+                          <p className="text-sm font-bold text-gray-900">
+                            {csr.Business?.[0]?.exactCost
+                              ? `₨ ${Number(
+                                  csr.Business[0].exactCost
+                                ).toLocaleString()}`
+                              : "N/A"}
+                          </p>
+                          <p className="text-xs text-gray-500">Total Cost</p>
+                        </div>
+                      </TableCell>
+
+                      {/* Status */}
+                      <TableCell className="px-4 py-3 w-28 text-center">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            getOverallStatus(csr) === "Approved"
+                              ? "bg-green-100 text-green-800"
+                              : getOverallStatus(csr) === "Pending"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : getOverallStatus(csr) === "Completed"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {getOverallStatus(csr)}
+                        </span>
+                      </TableCell>
+
+                      {/* View Button */}
+                      <TableCell className="px-4 py-3 w-32 text-center">
+                        <Button
+                          size="sm"
+                          className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-sm px-4 py-2 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
+                          onClick={() => setSelectedCSR(csr)}
+                        >
+                          View Details
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           )}
         </CardContent>
@@ -718,11 +728,20 @@ const CSRList = () => {
                 <h2 className="font-semibold text-sm mb-2">
                   Attached Sales Report
                 </h2>
-                <iframe
-                  src={selectedCSR.filePath}
-                  title="Sales Report"
-                  className="w-full h-[500px] border"
-                ></iframe>
+
+                {selectedCSR.filePath.endsWith(".pdf") ? (
+                  <iframe
+                    src={selectedCSR.filePath}
+                    title="Sales Report"
+                    className="w-full h-[500px] border"
+                  />
+                ) : (
+                  <img
+                    src={selectedCSR.filePath}
+                    alt="Attached Report"
+                    className="max-h-[500px] w-auto border mx-auto"
+                  />
+                )}
               </div>
             )}
           </div>

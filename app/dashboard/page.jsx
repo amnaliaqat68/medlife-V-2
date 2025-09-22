@@ -406,12 +406,13 @@ function DashboardContent() {
                       {/* Header Section */}
                       <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-4">
-                          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg">
-                            <Shield className="w-8 h-8 text-white" />
+                          <div className="w-20 h-16  rounded-2xl flex items-center justify-center ">
+                            {/* <Shield className="w-8 h-8 text-white" /> */}
+                            <img src="/Medlife logo.png" alt="logo" />
                           </div>
                           <div>
                             <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-                              Healthcare Command Center
+                              Medlife pharmaceutical
                             </h1>
                             <p className="text-gray-500 text-sm font-medium">
                               Advanced Medical Management System

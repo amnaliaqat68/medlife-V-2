@@ -210,6 +210,28 @@ export default function CSRForm({ doctorId }) {
     setFormData({ ...formData, products: updated });
   };
 
+  // const handleUpload = async (selectedFile) => {
+  //   setUploading(true);
+  //   const formData = new FormData();
+  //   formData.append("file", selectedFile);
+  //   formData.append("upload_preset", "Saas_preset");
+
+  //   try {
+  //     const response = await axios.post(
+  //       "https://api.cloudinary.com/v1_1/det4apayu/auto/upload",
+  //       formData
+  //     );
+
+  //     setUploadedUrl(response.data.secure_url);
+  //     toast.success("File uploaded successfully!");
+  //   } catch (error) {
+  //     console.error("Upload failed", error);
+  //     toast.error("File upload failed");
+  //   } finally {
+  //     setUploading(false);
+  //   }
+  // };
+
   const handleUpload = async (selectedFile) => {
     setUploading(true);
     const formData = new FormData();
@@ -221,7 +243,16 @@ export default function CSRForm({ doctorId }) {
         "https://api.cloudinary.com/v1_1/det4apayu/auto/upload",
         formData
       );
-      setUploadedUrl(response.data.secure_url);
+
+      let fileUrl = response.data.secure_url;
+
+      // ✅ Fix Cloudinary bug: PDFs come back as image/upload
+      if (selectedFile.type === "application/pdf") {
+        fileUrl = fileUrl.replace("/image/upload", "/raw/upload");
+      }
+
+      setUploadedUrl(fileUrl);
+
       toast.success("File uploaded successfully!");
     } catch (error) {
       console.error("Upload failed", error);
@@ -579,7 +610,7 @@ export default function CSRForm({ doctorId }) {
                           ...prev.Business?.[0],
                           investmentLastYear:
                             (Number(selectedDoctor.investmentLastYear) || 0) +
-                            (Number(prev.Business?.[0]?.exactCost) || 0), 
+                            (Number(prev.Business?.[0]?.exactCost) || 0),
                         },
                       ],
                     }));

@@ -54,7 +54,7 @@ const SummaryPage = ({ data = [] }) => {
               "Executed By",
               "Particulars",
               "Amount",
-              "Action",
+              "View",
             ].map((header) => (
               <th
                 key={header}
@@ -112,7 +112,31 @@ const SummaryPage = ({ data = [] }) => {
                   ? Number(csr.Business[0].exactCost).toLocaleString()
                   : "N/A"}
               </td>
-              <td className="px-2 py-2 border border-gray-300">{}</td>
+             <td className="px-4 py-3 w-32 text-center">
+                        {csr.filePath ? (
+                          csr.filePath.endsWith(".pdf") ? (
+                            <a
+                              href={csr.filePath}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline text-xs"
+                            >
+                              View PDF
+                            </a>
+                          ) : (
+                            <img
+                              src={csr.filePath}
+                              alt="Attachment"
+                              className="h-10 w-10 object-cover rounded-md mx-auto"
+                            />
+                          )
+                        ) : (
+                          <span className="text-gray-400 text-xs italic">
+                            No file
+                          </span>
+                        )}
+                      </td>
+
             </tr>
           ))}
         </tbody>

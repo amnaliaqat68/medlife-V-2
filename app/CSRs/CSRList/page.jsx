@@ -193,6 +193,9 @@ const CSRList = () => {
                     <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-32 text-center">
                       View
                     </TableHead>
+                    <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-32 text-center">
+                      Attachment
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
 
@@ -289,6 +292,30 @@ const CSRList = () => {
                         >
                           {getOverallStatus(csr)}
                         </span>
+                      </TableCell>
+                      <TableCell className="px-4 py-3 w-32 text-center">
+                        {csr.filePath ? (
+                          csr.filePath.endsWith(".pdf") ? (
+                            <a
+                              href={csr.filePath}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline text-xs"
+                            >
+                              View PDF
+                            </a>
+                          ) : (
+                            <img
+                              src={csr.filePath}
+                              alt="Attachment"
+                              className="h-10 w-10 object-cover rounded-md mx-auto"
+                            />
+                          )
+                        ) : (
+                          <span className="text-gray-400 text-xs italic">
+                            No file
+                          </span>
+                        )}
                       </TableCell>
 
                       {/* View Button */}

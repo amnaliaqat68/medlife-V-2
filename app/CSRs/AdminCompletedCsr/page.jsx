@@ -11,6 +11,7 @@ import {
   Activity,
   TrendingUp,
 } from "lucide-react";
+import jsPDF from "jspdf";
 
 const Completedpage = () => {
   const [reports, setReports] = useState([]);
@@ -42,6 +43,26 @@ const Completedpage = () => {
     };
     fetchReports();
   }, []);
+  const handleDownloadCSR = (csr) => {
+  const doc = new jsPDF();
+
+  doc.setFontSize(14);
+  doc.text(`CSR Report #${csr.csrNumber}`, 10, 10);
+
+  doc.setFontSize(11);
+  doc.text(`Filled By: ${csr.filledBy}`, 10, 20);
+  doc.text(`Doctor: ${csr.doctorId?.name || "N/A"}`, 10, 30);
+  doc.text(`District: ${csr.district || "N/A"}`, 10, 40);
+  doc.text(`Customer Type: ${csr.customerType}`, 10, 50);
+  doc.text(`Patients Morning: ${csr.patientsMorning}`, 10, 60);
+  doc.text(`Patients Evening: ${csr.patientsEvening}`, 10, 70);
+  doc.text(`Investment Instructions: ${csr.investmentInstructions}`, 10, 80);
+  doc.text(`Comments: ${csr.comments}`, 10, 90);
+
+  // Save the file
+  doc.save(`CSR_${csr.csrNumber}.pdf`);
+};
+
 
   return (
     <div>
@@ -151,7 +172,7 @@ const Completedpage = () => {
 
                     {/* Action Buttons */}
                     <div className="flex gap-2">
-                      <Button
+                      <Button onClick={() => handleDownloadCSR(csr)}
                         size="sm"
                         className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-md shadow-sm hover:shadow-md transition-all duration-200 text-xs py-1"
                       >

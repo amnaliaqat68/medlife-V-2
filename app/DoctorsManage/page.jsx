@@ -423,6 +423,7 @@ export default function DoctorManagement() {
                             Delete
                           </Button>
                         )}
+                        {["admin", "gm"].includes(userRole) && (
                         <Button
                           variant="outline"
                           size="sm"
@@ -434,6 +435,7 @@ export default function DoctorManagement() {
                         >
                           Edit
                         </Button>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

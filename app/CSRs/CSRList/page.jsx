@@ -349,7 +349,7 @@ const CSRList = () => {
           <div className="bg-white w-full max-w-5xl h-[90%] overflow-y-auto rounded-lg shadow-lg p-4 relative">
             {/* Header Buttons */}
             <div className="flex justify-between items-center sticky top-0 shadow-sm bg-white p-2 z-10">
-              <div className="text-xs font-semibold text-gray-600">
+              <div className="text-xs  font-semibold text-gray-600">
                 <p className="uppercase">CSR #</p>
                 <p className="text-lg font-bold">{selectedCSR.csrNumber}</p>
               </div>
@@ -380,11 +380,10 @@ const CSRList = () => {
               className="bg-white p-3 max-w-[250mm] mx-auto text-[12px]"
             >
               {/* Print-Only Header */}
-              <div className="hidden print:flex items-center justify-between mb-4 border-b pb-2">
+              <div className="hidden print:flex ml-10 mb-4 border-b pb-2">
                 {/* Left: CSR Number */}
                 <div className="text-xs font-bold text-gray-700">
-                  <p>CSR #</p>
-                  <p>{selectedCSR.csrNumber}</p>
+                  <p>CSR # {selectedCSR.csrNumber}</p>
                 </div>
 
                 {/* Center: Title */}

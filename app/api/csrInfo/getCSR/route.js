@@ -113,15 +113,17 @@ export async function GET(req) {
       .populate({
         path: "doctorId",
         match:
-          decoded.role === "sm" || decoded.role === "dsm"
-            ? {
-                district: {
-                  $in: Array.isArray(decoded.district)
-                    ? decoded.district
-                    : [decoded.district],
-                },
-              }
-            : {},
+         decoded.role === "sm" || decoded.role === "dsm"
+      ? {
+          $or: (
+            Array.isArray(decoded.district)
+              ? decoded.district
+              : [decoded.district]
+          ).map((d) => ({
+            district: { $regex: new RegExp(`^${d}$`, "i") },
+          })),
+        }
+      : {},
         select: "name district qualification designation speciality address brick zone group",
       })
       .populate("creatorId", "name district")

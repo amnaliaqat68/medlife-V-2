@@ -348,7 +348,7 @@ const CSRList = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-5xl h-[90%] overflow-y-auto rounded-lg shadow-lg p-4 relative">
             {/* Header Buttons */}
-            <div className="flex justify-between items-center  sticky top-0 shadow-sm bg-white p-2 z-10">
+            <div className="flex justify-between items-center sticky top-0 shadow-sm bg-white p-2 z-10">
               <div className="text-xs font-semibold text-gray-600">
                 <p className="uppercase">CSR #</p>
                 <p className="text-lg font-bold">{selectedCSR.csrNumber}</p>
@@ -377,7 +377,7 @@ const CSRList = () => {
             </div>
             <div
               ref={printRef}
-              className="bg-white p-3 max-w-[250mm] mx-auto text-sm"
+              className="bg-white p-3 max-w-[250mm] mx-auto text-[12px]"
             >
               {/* Print-Only Header */}
               <div className="hidden print:flex items-center justify-between mb-4 border-b pb-2">
@@ -402,26 +402,26 @@ const CSRList = () => {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-2 border print:grid-cols-3 rounded-lg p-2 shadow-sm">
+              <div className="grid print:ml-4 print:mr-4 md:grid-cols-3 gap-2 border print:grid-cols-3 rounded-lg p-2 shadow-sm">
                 <p className="text-[12px]">
-                  <strong >Submitted By:</strong>{" "}
+                  <strong>Submitted By:</strong>{" "}
                   {selectedCSR.creatorId?.name || "N/A"}
                 </p>
-                <p  className="text-[12px]">
+                <p className="text-[12px]">
                   <strong>District:</strong>{" "}
                   {selectedCSR.creatorId?.district || "N/A"}
                 </p>
-                <p  className="text-[12px]">
+                <p className="text-[12px]">
                   <strong> FE/MIO/SMIO:</strong> {selectedCSR.filledBy || "N/A"}
                 </p>
-                <p  className="text-[12px]">
+                <p className="text-[12px]">
                   <strong>Doctor:</strong> {selectedCSR.doctorId?.name || "N/A"}
                 </p>
                 <p>
                   <strong>Qualification:</strong>{" "}
                   {selectedCSR.doctorId?.qualification || "N/A"}
                 </p>
-                <p  className="text-[12px]">
+                <p className="text-[12px]">
                   <strong>Designation:</strong>{" "}
                   {selectedCSR.doctorId?.designation || "N/A"}
                 </p>
@@ -429,7 +429,7 @@ const CSRList = () => {
                   <strong>Speciality:</strong>{" "}
                   {selectedCSR.doctorId?.speciality || "N/A"}
                 </p>
-                <p  className="text-[12px]">
+                <p className="text-[12px]">
                   <strong>District:</strong>{" "}
                   {selectedCSR.doctorId?.district || "N/A"}
                 </p>
@@ -441,7 +441,7 @@ const CSRList = () => {
                   {selectedCSR.doctorId?.address || "N/A"}
                 </p>
 
-                <p  className="text-[12px]">
+                <p className="text-[12px]">
                   <strong>Group:</strong> {selectedCSR.doctorId?.group || "N/A"}
                 </p>
                 <p className="text-[12px]">
@@ -458,17 +458,21 @@ const CSRList = () => {
               {/* Products */}
               {selectedCSR.products?.length > 0 && (
                 <>
-                  <h2 className="font-semibold text-gray-800 mb-2 mt-2">
+                  <h2 className=" text-center font-semibold text-gray-800 mb-2 mt-2">
                     Products
                   </h2>
-                  <table className="min-w-full border text-xs shadow-sm ">
+                  <table
+                    className="w-full sm:w-[900px] print:w-[700px] 
+        border text-[10px] shadow-sm 
+        mx-auto "
+                  >
                     <thead className="bg-gray-100 text-[8px]">
                       <tr>
-                        <th className="border px-2 py-1">Product</th>
-                        <th className="border px-2 py-1">Strength</th>
-                        <th className="border px-2 py-1">Present</th>
-                        <th className="border px-2 py-1">Expected</th>
-                        <th className="border px-2 py-1">Addition</th>
+                        <th className="border p-1">Product</th>
+                        <th className="border p-1">Strength</th>
+                        <th className="border p-1">Present</th>
+                        <th className="border p-1">Expected</th>
+                        <th className="border p-1">Addition</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -529,12 +533,16 @@ const CSRList = () => {
 
               {selectedCSR.Business?.length > 0 && (
                 <section>
-                  <h2 className="font-semibold mt-2 text-gray-800 mb-2">
+                  <h2 className=" text-center font-semibold mt-2 text-gray-800 mb-2">
                     Business Details
                   </h2>
-                  <div className="grid md:grid-cols-2 print:grid-cols-2 gap-4">
+                  <div
+                    className=" w-full sm:w-[900px] print:w-[700px] 
+        text-[10px] shadow-sm 
+        mx-auto grid  md:grid-cols-2 print:grid-cols-2 gap-4"
+                  >
                     {/* Activity Info */}
-                    <table className="w-full border text-xs">
+                    <table className="w-full border text-[10px]">
                       <thead className="bg-gray-100 text-gray-600">
                         <tr>
                           <th
@@ -578,7 +586,7 @@ const CSRList = () => {
                     </table>
 
                     {/* Financial Summary */}
-                    <table className="w-full border text-xs">
+                    <table className="w-full border text-[10px]">
                       <thead className="bg-gray-100 text-gray-600">
                         <tr>
                           <th
@@ -629,11 +637,15 @@ const CSRList = () => {
               {/* Chemists */}
               {selectedCSR.chemists?.length > 0 && (
                 <section>
-                  <h2 className="font-semibold mt-2 text-gray-800 mb-2">
+                  <h2 className="text-center font-semibold mt-2 text-gray-800 mb-2">
                     Chemists
                   </h2>
                   <div className="overflow-x-auto">
-                    <table className="min-w-full border text-xs">
+                    <table
+                      className="w-full sm:w-[900px] print:w-[700px] 
+        border text-[10px] shadow-sm 
+        mx-auto "
+                    >
                       <thead className="bg-gray-100">
                         <tr>
                           <th className="border px-2 py-1">Name</th>
@@ -663,11 +675,15 @@ const CSRList = () => {
               {/* Ledger Summary */}
               {selectedCSR.ledgerSummary?.length > 0 && (
                 <section>
-                  <h2 className="font-semibold mt-2 text-gray-800 mb-2">
+                  <h2 className="text-center font-semibold mt-2 text-gray-800 mb-2">
                     Ledger Summary
                   </h2>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full border text-xs">
+                  <div className="">
+                    <table
+                      className=" w-full sm:w-[900px] print:w-[700px] 
+         text-[10px] shadow-sm 
+        mx-auto "
+                    >
                       <thead className="bg-gray-100">
                         <tr>
                           <th className="border px-2 py-1">Month</th>
@@ -686,16 +702,16 @@ const CSRList = () => {
                           const second = selectedCSR.ledgerSummary[i * 2 + 1];
                           return (
                             <tr key={i}>
-                              <td className="border px-2 py-1">
+                              <td className="border px-1 py-1">
                                 {first?.month || ""}
                               </td>
-                              <td className="border px-2 py-1">
+                              <td className="border px-1 py-1">
                                 {first?.sale || "N/A"}
                               </td>
-                              <td className="border px-2 py-1">
+                              <td className="border px-1 py-1">
                                 {second?.month || ""}
                               </td>
-                              <td className="border px-2 py-1">
+                              <td className="border px-1 py-1">
                                 {second?.sale || "N/A"}
                               </td>
                             </tr>
@@ -709,20 +725,20 @@ const CSRList = () => {
 
               {/* Instructions & Comments */}
               <section className="border-t pt-4">
-                <h2 className="font-semibold text-gray-800 mb-2">
+                <h2 className="text-center font-semibold text-gray-800 mb-2">
                   Instructions & Comments
                 </h2>
-                <p>
+                <p className="ml-7">
                   <strong>Investment Instructions:</strong>{" "}
                   {selectedCSR.investmentInstructions || "N/A"}
                 </p>
-                <p>
+                <p className="ml-7">
                   <strong>Comments:</strong> {selectedCSR.comments || "N/A"}
                 </p>
               </section>
 
               {/* Approval Signatures */}
-              <section className="mt-3">
+              <section className=" print:ml-4 mt-3">
                 <h2 className="font-semibold text-gray-800 mb-2">Approvals</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 print:grid-cols-4 text-center">
                   {["sm", "gm", "pm", "md"].map((role) => {
@@ -758,7 +774,6 @@ const CSRList = () => {
                             )} */}
                           </div>
                         )}
-                       
 
                         {/* Role label */}
                         <p className="mt-auto text-xs font-medium">

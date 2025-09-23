@@ -659,7 +659,7 @@ const Completedpage = () => {
                   {(() => {
                     const fileUrl = selectedCSR.filePath.startsWith("http")
                       ? selectedCSR.filePath
-                      : `/uploads/${selectedCSR.filePath}`;
+                      : selectedCSR.filePath; // ✅ already starts with /uploads/
 
                     if (fileUrl.endsWith(".pdf")) {
                       return (

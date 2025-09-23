@@ -16,7 +16,7 @@ export async function POST(req, { params }) {
   const executeDate = formData.get("executeDate");
   const particulars = formData.get("particulars");
   const exactCost = formData.get("exactCost");
-  const fileUrl = formData.get("fileUrl");
+ const fileUrl = formData.get("fileUrl");
 
   const updatedCSR = await CSRfom.findByIdAndUpdate(
     id,

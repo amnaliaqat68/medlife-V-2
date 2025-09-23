@@ -54,9 +54,9 @@ export default function ExecuteCSRPage() {
     formData.append("executedBy", name);
     formData.append("executeDate", date);
     formData.append("particulars", particulars);
-     formData.append("exactCost", activity); 
-    if (file) {
-      formData.append("file", file);
+    formData.append("exactCost", activity);
+    if (uploadedUrl) {
+      formData.append("fileUrl", uploadedUrl); // 👈 send Cloudinary URL
     }
 
     try {

@@ -38,6 +38,7 @@ export async function POST(req) {
         investmentLastYear: doctor ? doctor.investmentLastYear : 0, 
       },
     ],
+     filePath: body.filePath || null,
       csrNumber: nextCsrNumber,
     });
     const saved = await newCSR.save();

@@ -24,33 +24,15 @@ export async function GET(req) {
     let query = {};
 
     const csrs = await CSRform.find(query)
-      .populate({
-        path: "doctorId",
-        match:
-          decoded.role === "sm" || decoded.role === "dsm"
-            ? {
-                $or: (Array.isArray(decoded.district)
-                  ? decoded.district
-                  : [decoded.district]
-                ).map((d) => ({
-                  district: { $regex: new RegExp(`^${d}$`, "i") },
-                })),
-              }
-            : {},
-        select:
-          "name district qualification designation speciality address brick zone group",
-      })
-      .populate("creatorId", "name district role")
+      .populate("doctorId", "name district")
+
+      .populate("creatorId", "name district")
 
       .populate("approvedBy.sm", "name")
       .populate("approvedBy.gm", "name")
       .sort({ createdAt: -1 });
-    const filteredCSRs =
-      decoded.role === "sm" || decoded.role === "dsm"
-        ? csrs.filter((csr) => csr.doctorId)
-        : csrs;
 
-    return NextResponse.json(filteredCSRs);
+    return NextResponse.json(csrs);
   } catch (error) {
     console.error("Error fetching CSR data:", error);
     return NextResponse.json(

@@ -806,14 +806,15 @@ export default function CSRForm({ doctorId }) {
         >
           <h2
             id="product-details-title"
-            className="text-1xl font-bold text-gray-900 mb-4 border-b text-center border-gray-200 pb-3"
+            className="text-lg font-bold text-gray-900 mb-4 border-b text-center border-gray-200 pb-3"
           >
             Product Details
           </h2>
 
-          <div className="overflow-x-auto print:overflow-visible">
-            <table className="min-w-full text-sm text-left border border-gray-200 rounded-lg print:border-black">
-              <thead className=" text-gray-700  text-sm print:bg-white print:border-b print:border-black">
+          {/* Desktop Table */}
+          <div className="hidden sm:block overflow-x-auto relative print:overflow-visible">
+            <table className="min-w-full text-sm text-left border border-gray-200 rounded-lg">
+              <thead className="text-gray-700 text-sm print:bg-white print:border-b print:border-black">
                 <tr>
                   {[
                     "#",
@@ -826,7 +827,7 @@ export default function CSRForm({ doctorId }) {
                   ].map((header) => (
                     <th
                       key={header}
-                      className="border px-4 py-3 print:border-black"
+                      className="border px-4 py-3 print:border-black whitespace-nowrap"
                       scope="col"
                     >
                       {header}
@@ -861,8 +862,7 @@ export default function CSRForm({ doctorId }) {
                               e.target.value
                             )
                           }
-                          className="w-full rounded-md border border-gray-300 px-3 py-2
-              focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition shadow-sm print:border-gray-400 print:shadow-none"
+                          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition shadow-sm"
                         >
                           <option value="" disabled>
                             Select Product
@@ -886,8 +886,7 @@ export default function CSRForm({ doctorId }) {
                               e.target.value
                             )
                           }
-                          className="w-full rounded-md border border-gray-300 px-3 py-2
-              focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition shadow-sm print:border-gray-400 print:shadow-none"
+                          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition shadow-sm"
                         >
                           <option value="" disabled>
                             Select Strength
@@ -931,8 +930,7 @@ export default function CSRForm({ doctorId }) {
                               Number(e.target.value)
                             )
                           }
-                          className="w-full rounded-md border border-gray-300 px-3 py-2
-              focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition print:border-gray-400 print:shadow-none"
+                          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition"
                           placeholder="0"
                         />
                       </td>
@@ -950,13 +948,12 @@ export default function CSRForm({ doctorId }) {
                               Number(e.target.value)
                             )
                           }
-                          className="w-full rounded-md border border-gray-300 px-3 py-2
-              focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition print:border-gray-400 print:shadow-none"
+                          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition"
                           placeholder="0"
                         />
                       </td>
 
-                      {/* Addition (calculated only, no input) */}
+                      {/* Addition */}
                       <td className="border px-4 py-2 text-center font-semibold print:border-black">
                         {additionUnits}
                       </td>
@@ -977,6 +974,147 @@ export default function CSRForm({ doctorId }) {
               </tbody>
             </table>
           </div>
+          {/* {mobile-reponsive} */}
+          <div className="space-y-4 sm:hidden">
+            {formData.products.map((item, index) => {
+              const additionUnits =
+                (item.expectedUnits || 0) - (item.presentUnits || 0);
+
+              return (
+                <div
+                  key={index}
+                  className="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm"
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-bold text-gray-700">
+                      #{index + 1}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => removeProduct(index)}
+                      className="text-red-600 text-sm font-medium"
+                    >
+                      Remove
+                    </button>
+                  </div>
+
+                  {/* Fields stacked */}
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs text-gray-500">Product</label>
+                      <select
+                        value={item.product}
+                        onChange={(e) =>
+                          handleProductChange(index, "product", e.target.value)
+                        }
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition"
+                      >
+                        <option value="" disabled>
+                          Select Product
+                        </option>
+                        {productsList.map((p, idx) => (
+                          <option key={idx} value={p}>
+                            {p}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-xs text-gray-500">Strength</label>
+                      <select
+                        value={item.strength}
+                        onChange={(e) =>
+                          handleProductChange(index, "strength", e.target.value)
+                        }
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition"
+                      >
+                        <option value="" disabled>
+                          Select Strength
+                        </option>
+                        {[
+                          "50mg",
+                          "75mg",
+                          "100mg",
+                          "150mg",
+                          "250mg",
+                          "500mg",
+                          "600mg",
+                          "750mg",
+                          "900mg",
+                          "1050mg",
+                          "600mcg",
+                          "1000mcg",
+                          "1g",
+                          "2g",
+                          "240ml",
+                          "300ml",
+                          "Custom",
+                        ].map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-xs text-gray-500">
+                          Present Units
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          value={item.presentUnits || ""}
+                          onChange={(e) =>
+                            handleProductChange(
+                              index,
+                              "presentUnits",
+                              Number(e.target.value)
+                            )
+                          }
+                          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition"
+                          placeholder="0"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-500">
+                          Expected Units
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          value={item.expectedUnits || ""}
+                          onChange={(e) =>
+                            handleProductChange(
+                              index,
+                              "expectedUnits",
+                              Number(e.target.value)
+                            )
+                          }
+                          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition"
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-xs text-gray-500">
+                        Additional
+                      </label>
+                      <p className="font-semibold text-gray-700">
+                        {additionUnits}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Add Button */}
+          
 
           <div className="mt-6 flex justify-end print:hidden">
             <button

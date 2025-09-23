@@ -19,6 +19,8 @@ import {
   Zap,
   Settings,
 } from "lucide-react";
+import { Menu, X } from "lucide-react";
+
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,6 +46,7 @@ function DashboardContent() {
   const [totalCSR, setTotalCSR] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [activeUsers, setActiveUsers] = useState(0);
   const [loadingStates, setLoadingStates] = useState({
     user: true,
@@ -178,8 +181,25 @@ function DashboardContent() {
 
   return (
     <div className="h-screen flex bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 overflow-hidden">
+      <div className="lg:hidden absolute top-4 left-4 z-50">
+        <button
+          onClick={() => setOpenDrawer(true)}
+          className="p-2 bg-white rounded-md shadow-md hover:bg-gray-100"
+        >
+          <Menu className="w-6 h-6 text-gray-800" />
+        </button>
+      </div>
       {/* Sidebar */}
-      <aside className="w-60 bg-white border-r shadow-sm flex flex-col flex-shrink-0 h-full">
+      <aside
+        className={`fixed lg:static top-0 left-0 h-full w-60 bg-white border-r shadow-sm flex flex-col transform transition-transform duration-300 z-40
+        ${openDrawer ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
+      >
+        <div className="flex items-center justify-between px-4 py-4 flex-shrink-0 border-b lg:hidden">
+          <h1 className="text-lg font-bold text-blue-950"></h1>
+          <button onClick={() => setOpenDrawer(false)}>
+            <X className="w-6 h-6 text-gray-700" />
+          </button>
+        </div>
         {/* Logo */}
         <div className="flex items-center gap-3 px-4 py-4 flex-shrink-0">
           <img
@@ -384,14 +404,14 @@ function DashboardContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="relative bg-white rounded-3xl mb-8 p-8 shadow-xl border border-gray-100 overflow-hidden"
+                    className="relative bg-white rounded-3xl  shadow-xl border lg:rounded-3xl mb-6 lg:mb-8 p-4 sm:p-6 lg:p-8    border-gray-100 overflow-hidden"
                   >
                     {/* Subtle Medical Pattern Background */}
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-cyan-50/20 to-teal-50/30"></div>
 
                     {/* Floating Medical Icons */}
                     <div className="absolute inset-0 overflow-hidden">
-                      <div className="absolute top-6 right-8 opacity-5">
+                      <div className="absolute top-4 right-6 opacity-5 hidden sm:block">
                         <Heart className="w-32 h-32 text-red-500" />
                       </div>
                       <div className="absolute bottom-6 left-8 opacity-5">
@@ -404,28 +424,28 @@ function DashboardContent() {
 
                     <div className="relative z-10">
                       {/* Header Section */}
-                      <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-20 h-16  rounded-2xl flex items-center justify-center ">
+                      <div className="flex flex-col sm:flex-row items-center sm:items-start sm:justify-between gap-4 mb-6">
+                        <div className="flex items-center gap-3 sm:gap-4 text-center sm:text-left">
+                          <div className="w-14 h-12 sm:w-20 sm:h-16 rounded-2xl flex items-center justify-center ">
                             {/* <Shield className="w-8 h-8 text-white" /> */}
                             <img src="/Medlife logo.png" alt="logo" />
                           </div>
                           <div>
-                            <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
                               Medlife pharmaceutical
                             </h1>
-                            <p className="text-gray-500 text-sm font-medium">
+                            <p className="text-gray-500 text-sm  font-medium">
                               Advanced Medical Management System
                             </p>
                           </div>
                         </div>
 
                         {/* User Welcome */}
-                        <div className="text-right">
-                          <p className="text-sm text-gray-500 mb-1">
+                        <div className="text-center sm:text-right">
+                          <p className="text-xs sm:text-sm text-gray-500 mb-1">
                             Welcome back,
                           </p>
-                          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                          <h2 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
                             {loadingStates.user ? "..." : user?.name || "User"}{" "}
                             👨‍⚕️
                           </h2>

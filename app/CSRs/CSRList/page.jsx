@@ -444,8 +444,8 @@ const CSRList = () => {
                   <strong>Group:</strong> {selectedCSR.doctorId?.group || "N/A"}
                 </p>
                 <p className="text-[12px]">
-                  <strong>Customer Type:</strong>{" "}
-                  {selectedCSR.customerType || "N/A"}
+                  <strong>Activity Number:</strong>{" "}
+                  {selectedCSR. activityNumber || "N/A"}
                 </p>
                 <p className="text-[12px]">
                   <strong>Patients (M/E):</strong>{" "}

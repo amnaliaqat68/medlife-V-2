@@ -32,7 +32,7 @@ export default function CSRForm({ doctorId }) {
     contact: "",
     patientsMorning: 0,
     patientsEvening: 0,
-    customerType: "New",
+    activityNumber: 0,
     brick: "",
     products: [
       {
@@ -735,7 +735,7 @@ export default function CSRForm({ doctorId }) {
               />
             </div>
 
-            {/* Patients & Customer Type Grid */}
+            {/* Patients & Activity Number Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
               <div>
                 <label
@@ -777,25 +777,18 @@ export default function CSRForm({ doctorId }) {
                 />
               </div>
 
-              <fieldset className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-6 mt-1">
-                <legend className="sr-only">Customer Type</legend>
-                {["Existing", "New"].map((type) => (
-                  <label
-                    key={type}
-                    className="flex items-center space-x-2 text-sm font-semibold text-gray-700 print:text-black cursor-pointer"
-                  >
-                    <input
-                      type="radio"
-                      name="customerType"
-                      value={type}
-                      checked={formData.customerType === type}
-                      onChange={handleInputChange}
-                      className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span>{type}</span>
-                  </label>
-                ))}
-              </fieldset>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-6 mt-1">
+                <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700 print:text-black cursor-pointer">
+                  No.of Activity
+                </label>
+                <input
+                  type="number"
+                  name="activityNumber"
+                  value={formData.activityNumber}
+                  onChange={handleInputChange}
+                  className="h-10 w-10 border text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                />
+              </div>
             </div>
           </section>
         </section>
@@ -1114,7 +1107,6 @@ export default function CSRForm({ doctorId }) {
           </div>
 
           {/* Add Button */}
-          
 
           <div className="mt-6 flex justify-end print:hidden">
             <button

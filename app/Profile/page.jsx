@@ -29,24 +29,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "react-toastify";
-import CSRList from "../CSRs/CSRList/page";
-import DoctorManagement from "../DoctorsManage/page";
-import DecisionPage from "../CSRs/DescionForCsr/page";
-import Createuserpage from "../Users/CreateUsers/page";
-import Completedpage from "../CSRs/AdminCompletedCsr/page";
-import Approvedpage from "../CSRs/AdminApprovedCsr/page";
-import Reportpage from "../FilterReport/Reports/page";
-import CSRForm from "../CSRs/CreatedCSR/page";
 
 export default function ProfileSettings() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [role, setRole] = useState("");
-  const [completed, setCompleted] = useState([]);
-  const [pending, setPending] = useState([]);
-  const [totalCSR, setTotalCSR] = useState([]);
-  const [doctors, setDoctors] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
   const [activePage, setActivePage] = useState("overview");
   const [loading, setLoading] = useState(true);
@@ -69,131 +57,113 @@ export default function ProfileSettings() {
     district: "",
   });
 
-  // 🔹 Logout handler
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+  // const fetchAllData = async () => {
+  //   setLoading(true);
 
-      if (response.ok) {
-        toast.success("Logout successful!");
-        router.push("/landing-page/Home");
-      } else {
-        toast.error("Logout failed. Please try again.");
-      }
-    } catch {
-      toast.error("An error occurred during logout.");
-    }
-  };
-  const fetchAllData = async () => {
-    setLoading(true);
+  //   try {
+  //     // Fetch user info first
+  //     setLoadingStates((prev) => ({ ...prev, user: true }));
+  //     const userRes = await fetch("/api/auth/userinfo");
+  //     const userData = await userRes.json();
 
-    try {
-      // Fetch user info first
-      setLoadingStates((prev) => ({ ...prev, user: true }));
-      const userRes = await fetch("/api/auth/userinfo");
-      const userData = await userRes.json();
+  //     if (userRes.ok) {
+  //       setUser(userData.user);
+  //       setRole(userData.user?.role);
+  //       setLoadingStates((prev) => ({ ...prev, user: false }));
 
-      if (userRes.ok) {
-        setUser(userData.user);
-        setRole(userData.user?.role);
-        setLoadingStates((prev) => ({ ...prev, user: false }));
+  //       const userRole = userData.user?.role;
 
-        const userRole = userData.user?.role;
+  //       // Parallel fetch of other data based on role
+  //       const promises = [];
 
-        // Parallel fetch of other data based on role
-        const promises = [];
+  //       // Fetch reports
+  //       setLoadingStates((prev) => ({ ...prev, reports: true }));
+  //       promises.push(
+  //         fetch("/api/csrInfo/getreportsCSR", { credentials: "include" })
+  //           .then((res) => res.json())
+  //           .then((data) => {
+  //             setCompleted(data);
+  //             setLoadingStates((prev) => ({ ...prev, reports: false }));
+  //           })
+  //           .catch((err) => {
+  //             console.error("Fetch reports failed", err);
+  //             setLoadingStates((prev) => ({ ...prev, reports: false }));
+  //           })
+  //       );
 
-        // Fetch reports
-        setLoadingStates((prev) => ({ ...prev, reports: true }));
-        promises.push(
-          fetch("/api/csrInfo/getreportsCSR", { credentials: "include" })
-            .then((res) => res.json())
-            .then((data) => {
-              setCompleted(data);
-              setLoadingStates((prev) => ({ ...prev, reports: false }));
-            })
-            .catch((err) => {
-              console.error("Fetch reports failed", err);
-              setLoadingStates((prev) => ({ ...prev, reports: false }));
-            })
-        );
+  //       // Fetch CSRs based on role
+  //       setLoadingStates((prev) => ({ ...prev, csr: true }));
+  //       let csrEndpoint = "";
+  //       if (userRole === "sm") {
+  //         csrEndpoint = "/api/csrInfo/getCSR";
+  //       } else if (userRole === "gm") {
+  //         csrEndpoint = "/api/csrInfo/getGMCSR";
+  //       } else if (userRole === "admin") {
+  //         csrEndpoint = "/api/csrInfo/getadminCSR";
+  //       }
 
-        // Fetch CSRs based on role
-        setLoadingStates((prev) => ({ ...prev, csr: true }));
-        let csrEndpoint = "";
-        if (userRole === "sm") {
-          csrEndpoint = "/api/csrInfo/getCSR";
-        } else if (userRole === "gm") {
-          csrEndpoint = "/api/csrInfo/getGMCSR";
-        } else if (userRole === "admin") {
-          csrEndpoint = "/api/csrInfo/getadminCSR";
-        }
+  //       if (csrEndpoint) {
+  //         promises.push(
+  //           fetch(csrEndpoint)
+  //             .then((res) => res.json())
+  //             .then((data) => {
+  //               setTotalCSR(data);
 
-        if (csrEndpoint) {
-          promises.push(
-            fetch(csrEndpoint)
-              .then((res) => res.json())
-              .then((data) => {
-                setTotalCSR(data);
+  //               const pendingCSR = data.filter((csr) => {
+  //                 if (userRole === "sm") return csr.smStatus === "pending";
+  //                 if (userRole === "gm") return csr.gmStatus === "pending";
+  //                 if (userRole === "admin")
+  //                   return csr.adminStatus === "pending";
+  //                 return false;
+  //               });
+  //               setPending(pendingCSR);
+  //               setLoadingStates((prev) => ({ ...prev, csr: false }));
+  //             })
+  //             .catch((err) => {
+  //               console.error("Error fetching CSR:", err);
+  //               setLoadingStates((prev) => ({ ...prev, csr: false }));
+  //             })
+  //         );
+  //       } else {
+  //         setLoadingStates((prev) => ({ ...prev, csr: false }));
+  //       }
 
-                const pendingCSR = data.filter((csr) => {
-                  if (userRole === "sm") return csr.smStatus === "pending";
-                  if (userRole === "gm") return csr.gmStatus === "pending";
-                  if (userRole === "admin")
-                    return csr.adminStatus === "pending";
-                  return false;
-                });
-                setPending(pendingCSR);
-                setLoadingStates((prev) => ({ ...prev, csr: false }));
-              })
-              .catch((err) => {
-                console.error("Error fetching CSR:", err);
-                setLoadingStates((prev) => ({ ...prev, csr: false }));
-              })
-          );
-        } else {
-          setLoadingStates((prev) => ({ ...prev, csr: false }));
-        }
+  //       // Fetch doctors
+  //       setLoadingStates((prev) => ({ ...prev, doctors: true }));
+  //       promises.push(
+  //         fetch("/api/doctorsManage/getDoctors")
+  //           .then((res) => res.json())
+  //           .then((data) => {
+  //             if (data) setDoctors(data);
+  //             setLoadingStates((prev) => ({ ...prev, doctors: false }));
+  //           })
+  //           .catch((err) => {
+  //             console.error("Error fetching doctors:", err);
+  //             setLoadingStates((prev) => ({ ...prev, doctors: false }));
+  //           })
+  //       );
 
-        // Fetch doctors
-        setLoadingStates((prev) => ({ ...prev, doctors: true }));
-        promises.push(
-          fetch("/api/doctorsManage/getDoctors")
-            .then((res) => res.json())
-            .then((data) => {
-              if (data) setDoctors(data);
-              setLoadingStates((prev) => ({ ...prev, doctors: false }));
-            })
-            .catch((err) => {
-              console.error("Error fetching doctors:", err);
-              setLoadingStates((prev) => ({ ...prev, doctors: false }));
-            })
-        );
+  //       // Wait for all promises to complete
+  //       await Promise.all(promises);
+  //     } else {
+  //       setLoadingStates((prev) => ({ ...prev, user: false }));
+  //     }
+  //   } catch (err) {
+  //     console.error("Error fetching user:", err);
+  //     setLoadingStates((prev) => ({
+  //       user: false,
+  //       csr: false,
+  //       doctors: false,
+  //       reports: false,
+  //     }));
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-        // Wait for all promises to complete
-        await Promise.all(promises);
-      } else {
-        setLoadingStates((prev) => ({ ...prev, user: false }));
-      }
-    } catch (err) {
-      console.error("Error fetching user:", err);
-      setLoadingStates((prev) => ({
-        user: false,
-        csr: false,
-        doctors: false,
-        reports: false,
-      }));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAllData();
-  }, []);
+  // useEffect(() => {
+  //   fetchAllData();
+  // }, []);
 
   // 🔹 Fetch user info
   const fetchUserInfo = async () => {
@@ -240,7 +210,6 @@ export default function ProfileSettings() {
     }
   };
   useEffect(() => {
-    
     fetchUserInfo();
     // const interval = setInterval(fetchActiveUsers, 30000);
     // return () => clearInterval(interval);
@@ -249,204 +218,6 @@ export default function ProfileSettings() {
 
   return (
     <div className="h-screen flex bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 overflow-hidden">
-      {/* Sidebar */}
-      <aside className="w-60 bg-white border-r shadow-sm flex flex-col flex-shrink-0 h-full">
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-4 py-4 flex-shrink-0">
-          <img
-            src="/chatgpt.png"
-            alt="logo"
-            width={40}
-            className="transition-transform hover:scale-105"
-          />
-          <h1 className="text-lg font-bold text-blue-950">MedLife CSR</h1>
-        </div>
-
-        {/* Profile Card */}
-        <div className="px-4 pb-4 flex-shrink-0">
-          <div className="bg-gray-50 rounded-2xl p-3 text-center">
-            <div className="w-12 h-12 mx-auto rounded-full flex items-center justify-center">
-              <img src="/profile.png" alt="" />
-            </div>
-            <h2 className="mt-2 font-semibold text-gray-800 text-sm">
-              {user ? user.name : "Loading..."}
-            </h2>
-            <p className="text-xs text-gray-500">
-              {user?.email || "Loading..."}
-            </p>
-            <Badge
-              variant="secondary"
-              className="mt-1 bg-indigo-600 text-white text-xs"
-            >
-              {role?.toUpperCase() || "NO ROLE"}
-            </Badge>
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 px-4 space-y-1 overflow-y-auto min-h-0">
-          <button
-            onClick={() => setActivePage("overview")}
-            className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg ${
-              activePage === "overview"
-                ? "bg-indigo-100 text-indigo-700 font-medium"
-                : "hover:bg-indigo-50 text-gray-700 "
-            }`}
-          >
-            <LayoutDashboard className="w-5 h-5" /> Overview
-          </button>
-
-          {/* CSR List + Doctors (shared by DSM, SM, GM) */}
-          {hasRole(["dsm", "sm", "gm", "admin"]) && (
-            <>
-              <button
-                onClick={() => setActivePage("csrlist")}
-                className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg ${
-                  activePage === "csrlist"
-                    ? "bg-indigo-100 text-indigo-700 font-medium"
-                    : "hover:bg-indigo-50 text-gray-700 "
-                }`}
-              >
-                <FileText className="w-5 h-5" /> CSR List
-              </button>
-
-              <button
-                onClick={() => setActivePage("doctors")}
-                className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg ${
-                  activePage === "doctors"
-                    ? "bg-indigo-100 text-indigo-700 "
-                    : "hover:bg-indigo-50 text-gray-700 "
-                }`}
-              >
-                <Stethoscope className="w-5 h-5 font-bold" /> Doctors
-              </button>
-            </>
-          )}
-
-          {/* Role-specific navigation */}
-          {role === "dsm" && (
-            <button
-              onClick={() => router.push("/CSRs/CreatedCSR")}
-              className="flex items-center gap-3 w-full px-4 py-2 rounded-lg hover:bg-indigo-50 text-gray-700 font-bold"
-            >
-              <PlusCircle className="w-5 h-5" /> Create CSR
-            </button>
-          )}
-
-          {role === "sm" && (
-            <button
-              onClick={() => setActivePage("descionpage")}
-              className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg ${
-                activePage === "descionpage"
-                  ? "bg-indigo-100 text-indigo-700  font-bold"
-                  : "hover:bg-indigo-50 text-gray-700"
-              }`}
-            >
-              <FileText className="w-5 h-5" /> Approval CSR
-            </button>
-          )}
-
-          {role === "gm" && (
-            <button
-              onClick={() => setActivePage("descionpage")}
-              className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg ${
-                activePage === "descionpage"
-                  ? "bg-indigo-100 text-indigo-700 font-bold"
-                  : "hover:bg-indigo-50 text-gray-700"
-              }`}
-            >
-              <FileText className="w-5 h-5" /> Approval CSR (SM)
-            </button>
-          )}
-          {role === "admin" && (
-            <button
-              onClick={() => setActivePage("approved")}
-              className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg ${
-                activePage === "approved"
-                  ? "bg-indigo-100 text-indigo-700 font-bold"
-                  : "hover:bg-indigo-50 text-gray-700"
-              }`}
-            >
-              <FileText className="w-5 h-5" /> Approved CSR
-            </button>
-          )}
-          {role === "admin" && (
-            <button
-              onClick={() => setActivePage("completed")}
-              className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg ${
-                activePage === "completed"
-                  ? "bg-indigo-100 text-indigo-700 font-bold"
-                  : "hover:bg-indigo-50 text-gray-700"
-              }`}
-            >
-              <FileText className="w-5 h-5" /> Completed CSR
-            </button>
-          )}
-          {role === "admin" && (
-            <button
-              onClick={() => setActivePage("reports")}
-              className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg ${
-                activePage === "reports"
-                  ? "bg-indigo-100 text-indigo-700 font-bold"
-                  : "hover:bg-indigo-50 text-gray-700"
-              }`}
-            >
-              <FileText className="w-5 h-5" /> Reports
-            </button>
-          )}
-          {role === "admin" && (
-            <button
-              onClick={() => setActivePage("createuser")}
-              className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg ${
-                activePage === "createuser"
-                  ? "bg-indigo-100 text-indigo-700 font-medium"
-                  : "hover:bg-indigo-50 text-gray-700"
-              }`}
-            >
-              <FileText className="w-5 h-5" /> Create User
-            </button>
-          )}
-
-          {/* Admin/GM extra option */}
-        </nav>
-        {/* Setting */}
-        <div className="p-6 border-t">
-          <button
-            className="flex items-center gap-3 w-full px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200"
-            onClick={() => setOpen(!open)}
-          >
-            <Settings className="w-4 h-4" /> Setting
-          </button>
-
-          {/* Expandable Profile Preview */}
-          {open && (
-            <div className="mt-2 p-4 bg-gray-50 border rounded-lg shadow-sm">
-              <h3 className="font-medium text-gray-700 mb-2">
-                Profile Preview
-              </h3>
-
-              {/* Navigate to full profile page */}
-              <button
-                onClick={() => router.push("/Profile")}
-                className="mt-3 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-              >
-                Update Profile
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Logout */}
-        <div className="p-4 border-t bg-white flex-shrink-0">
-          <Button
-            onClick={handleLogout}
-            className="w-full bg-red-600 hover:bg-red-700 flex items-center gap-2 py-2"
-          >
-            <LogOut className="w-4 h-4" /> Logout
-          </Button>
-        </div>
-      </aside>
-
       {/* Main Content */}
       <main className="flex-1 flex overflow-hidden bg-gray-50">
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
@@ -643,5 +414,3 @@ export default function ProfileSettings() {
     </div>
   );
 }
-
-

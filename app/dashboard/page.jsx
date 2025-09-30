@@ -36,6 +36,7 @@ import Createuserpage from "../Users/CreateUsers/page";
 import Completedpage from "../CSRs/AdminCompletedCsr/page";
 import Approvedpage from "../CSRs/AdminApprovedCsr/page";
 import Reportpage from "../FilterReport/Reports/page";
+import ProfileSettings from "../Profile/page";
 
 function DashboardContent() {
   const [open, setOpen] = useState(false);
@@ -191,7 +192,7 @@ function DashboardContent() {
       </div>
       {/* Sidebar */}
       <aside
-        className={`fixed lg:static top-0 left-0 h-full w-60 bg-white border-r shadow-sm flex flex-col transform transition-transform duration-300 z-40
+        className={`fixed lg:static top-0 left-0 h-full w-68 bg-white border-r shadow-sm flex flex-col transform transition-transform duration-300 z-40
         ${openDrawer ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       >
         <div className="flex items-center justify-between px-4 py-4 flex-shrink-0 border-b lg:hidden">
@@ -344,34 +345,30 @@ function DashboardContent() {
                     : "hover:bg-indigo-50 text-gray-700"
                 }`}
               >
-                <FileText className="w-5 h-5" /> Users +
+                <FileText className="w-5 h-5" /> Users
               </button>
             </>
           )}
+          {/* Setting */}
+          <div className="p-6 border-t">
+            <button
+              className="flex items-center w-full px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200"
+              onClick={() => setOpen(!open)}
+            >
+              <Settings className="w-4 h-4" /> Setting
+            </button>
+            {open && (
+              <div className="mt-2 p-4 bg-gray-50 border rounded-lg shadow-sm">
+                <button
+                  onClick={() => handleNav("profile")}
+                  className="mt-1 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                >
+                  Update Profile
+                </button>
+              </div>
+            )}
+          </div>
         </nav>
-
-        {/* Setting */}
-        <div className="p-6 border-t">
-          <button
-            className="flex items-center gap-3 w-full px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200"
-            onClick={() => setOpen(!open)}
-          >
-            <Settings className="w-4 h-4" /> Setting
-          </button>
-          {open && (
-            <div className="mt-2 p-4 bg-gray-50 border rounded-lg shadow-sm">
-              <h3 className="font-medium text-gray-700 mb-2">
-                Profile Preview
-              </h3>
-              <button
-                onClick={() => router.push("/Profile")}
-                className="mt-3 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-              >
-                Update Profile
-              </button>
-            </div>
-          )}
-        </div>
 
         {/* Logout */}
         <div className="p-4 border-t bg-white flex-shrink-0">
@@ -910,6 +907,9 @@ function DashboardContent() {
 
           {tab === "csrlist" && hasRole(["dsm", "sm", "gm", "admin"]) && (
             <CSRList />
+          )}
+          {tab === "profile" && hasRole(["dsm", "sm", "gm", "admin"]) && (
+            <ProfileSettings/>
           )}
           {tab === "doctors" && hasRole(["dsm", "sm", "gm", "admin"]) && (
             <DoctorManagement />

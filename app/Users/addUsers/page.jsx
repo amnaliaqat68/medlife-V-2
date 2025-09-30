@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import Select from "react-select";
 
 export default function AddUserpage({ user, onSuccess }) {
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { id } = useParams();
   const [form, setForm] = useState({
@@ -53,6 +54,8 @@ export default function AddUserpage({ user, onSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return; 
+  setLoading(true);
 
     const payload = {
       ...form,
@@ -97,6 +100,9 @@ export default function AddUserpage({ user, onSuccess }) {
       console.error(err);
       toast.error("Error submitting user");
     }
+    finally {
+    setLoading(false); 
+  }
   };
   useEffect(() => {
     if (user) {

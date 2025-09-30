@@ -15,7 +15,7 @@ export async function GET() {
       )
       
       .lean();
-      console.log("ReportCSR Data:", data);
+      // console.log("ReportCSR Data:", data);
     return Response.json(data);
   } catch (error) {
     return new Response("Error fetching data", { status: 500 });

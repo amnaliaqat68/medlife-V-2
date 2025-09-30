@@ -92,7 +92,7 @@ const CSRformschema = new mongoose.Schema(
     groupOfFE: { type: String },
     patientsMorning: { type: Number },
     patientsEvening: { type: Number },
-   activityNumber: {type: Number},
+    activityNumber: {type: Number},
     products: [productSchema],
     chemists: [chemistSchema],
     Business: [BusinessValueSchema],

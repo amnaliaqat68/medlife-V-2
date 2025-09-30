@@ -64,7 +64,7 @@ const CSRList = () => {
           setCsrList([]);
           return;
         }
-        console.log("Fetched CSR Data:", data);
+        // console.log("Fetched CSR Data:", data);
         setCsrList(data);
       } catch (error) {
         console.error("Error fetching CSR:", error);

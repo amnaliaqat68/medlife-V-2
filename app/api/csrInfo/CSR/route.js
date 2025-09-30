@@ -4,6 +4,7 @@ import connectDB from "../../../config/db.js";
 import addDoctor from "@/app/model/addDoctor.js";
 import CSRform from "../../../model/CSRfom.js";
 
+
 export async function POST(req) {
   try {
     await connectDB();
@@ -21,13 +22,21 @@ export async function POST(req) {
     const creatorId = decoded.userId;
 
     const body = await req.json();
-    console.log("Received payload in backend:", body);
+    // console.log("Received payload in backend:", body);
     const doctor = await addDoctor.findById(body.doctorId);
+    
 
     const lastCSR = await CSRform.findOne().sort({ csrNumber: -1 });
     const lastNumber =
       lastCSR && !isNaN(lastCSR.csrNumber) ? Number(lastCSR.csrNumber) : 0;
     const nextCsrNumber = lastNumber + 1;
+    const lastDoctorCSR = await CSRform.findOne({ doctorId: body.doctorId })
+      .sort({ activityNumber: -1 })
+      .exec();
+
+    const nextActivityNumber = lastDoctorCSR
+      ? lastDoctorCSR.activityNumber + 1
+      : 1;
 
     const newCSR = new CSRform({
       ...body,
@@ -40,6 +49,7 @@ export async function POST(req) {
     ],
      filePath: body.filePath || null,
       csrNumber: nextCsrNumber,
+      activityNumber: nextActivityNumber,
     });
     const saved = await newCSR.save();
 

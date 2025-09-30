@@ -12,6 +12,7 @@ export default function CSRForm({ doctorId }) {
   const [doctorList, setDoctorList] = useState([]);
   const [isSearchable, setIsSearchable] = useState(true);
   const [file, setFile] = useState(null);
+  const [url, setUrl] = useState("");
   const [report, setReports] = useState([]);
   const [loading, setLoading] = useState(false);
   const [completedCSR, setCompletedCSR] = useState(null);
@@ -32,7 +33,7 @@ export default function CSRForm({ doctorId }) {
     contact: "",
     patientsMorning: 0,
     patientsEvening: 0,
-    activityNumber: 0,
+  
     brick: "",
     products: [
       {
@@ -217,20 +218,25 @@ export default function CSRForm({ doctorId }) {
     formData.append("upload_preset", "Saas_preset");
 
     try {
+      let resourceType = "auto";
+      if (
+        selectedFile.type === "application/pdf" ||
+        selectedFile.type ===
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || // DOCX
+        selectedFile.type ===
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // XLSX
+      ) {
+        resourceType = "raw";
+      }
+
       const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/det4apayu/auto/upload",
+        `https://api.cloudinary.com/v1_1/det4apayu/${resourceType}/upload`,
         formData
       );
 
-      let fileUrl = response.data.secure_url;
-
-      // ✅ Fix Cloudinary bug: PDFs come back as image/upload
-      if (selectedFile.type === "application/pdf") {
-        fileUrl = fileUrl.replace("/image/upload", "/raw/upload");
-      }
+      const fileUrl = response.data.secure_url;
 
       setUploadedUrl(fileUrl);
-
       toast.success("File uploaded successfully!");
     } catch (error) {
       console.error("Upload failed", error);
@@ -245,7 +251,7 @@ export default function CSRForm({ doctorId }) {
 
     const payload = {
       ...formData,
-     filePath: uploadedUrl || null,
+      filePath: uploadedUrl || null,
     };
 
     console.log("Submitting Payload:", payload);
@@ -310,7 +316,7 @@ export default function CSRForm({ doctorId }) {
       contact: "",
       patientsMorning: "",
       patientsEvening: "",
-      customerType: "New",
+      activityNumber: 0,
       brickName: "",
       products: [
         {
@@ -362,6 +368,20 @@ export default function CSRForm({ doctorId }) {
 
         const data = await res.json();
         console.log("Fetched CSR Reports:", data);
+        const doctorActivityMap = {};
+
+        data.forEach((csr) => {
+          if (!csr.doctorId) return;
+
+          if (!doctorActivityMap[csr.doctorId]) {
+            doctorActivityMap[csr.doctorId] = csr.activityNumber || 0;
+          } else {
+            doctorActivityMap[csr.doctorId] = Math.max(
+              doctorActivityMap[csr.doctorId],
+              csr.activityNumber || 0
+            );
+          }
+        });
 
         // 🔥 Transform each CSR to include total investment
         const updatedReports = data.map((csr) => {
@@ -376,6 +396,9 @@ export default function CSRForm({ doctorId }) {
                 totalInvestment: lastYear + cost, // new field
               },
             ],
+            activityNumber: csr.activityNumber || 0,
+            nextActivityNumber:
+            (doctorActivityMap[csr.doctorId] || 0) + 1
           };
         });
 
@@ -412,53 +435,32 @@ export default function CSRForm({ doctorId }) {
     };
     fetchDoctors();
   }, []);
-  //
+  useEffect(() => {
+  if (!formData.doctorId || report.length === 0) return;
 
-  // ✅ File Upload Input
-  const fileUploadSection = (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        Attach Sales Report
-      </label>
-
-      <input
-        type="file"
-        accept=".pdf,.jpg,.jpeg,.png,.xlsx,.docx"
-        onChange={(e) => {
-          const selectedFile = e.target.files[0];
-          if (!selectedFile) return;
-          setFile(selectedFile);
-          handleUpload(selectedFile);
-        }}
-        className="border-2 w-2xl h-3 rounded p-2 border-black"
-      />
-
-      {uploading && <p className="text-blue-500 mt-2">Uploading...</p>}
-
-      {uploadedUrl && (
-        <div className="mt-4">
-          <p className="text-green-600">✅ File Uploaded:</p>
-          {file && file.type.startsWith("image/") ? (
-            <img
-              src={uploadedUrl}
-              alt="Uploaded"
-              width="200"
-              className="mt-2 border"
-            />
-          ) : (
-            <a
-              href={uploadedUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 underline mt-2 block"
-            >
-              View Uploaded File
-            </a>
-          )}
-        </div>
-      )}
-    </div>
+  // Get all CSRs for this doctor
+  const doctorReports = report.filter(
+    (r) => r.doctorId === formData.doctorId
   );
+
+  if (doctorReports.length > 0) {
+    // Find the highest activityNumber and add 1
+    const maxActivity = Math.max(
+      ...doctorReports.map((r) => r.activityNumber || 0)
+    );
+    setFormData((prev) => ({
+      ...prev,
+      activityNumber: maxActivity + 1,
+    }));
+  } else {
+    // First CSR for this doctor
+    setFormData((prev) => ({
+      ...prev,
+      activityNumber: 1,
+    }));
+  }
+}, [formData.doctorId, report]);
+
   return (
     <div className="bg-white overflow-hidden min-h-screen py-2 rounded-md">
       <Head>
@@ -762,7 +764,7 @@ export default function CSRForm({ doctorId }) {
                 <input
                   type="number"
                   name="activityNumber"
-                  value={formData.activityNumber}
+                  value={formData.activityNumber || ""}
                   onChange={handleInputChange}
                   className="h-10 w-10 border text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
                 />

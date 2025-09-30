@@ -15,6 +15,7 @@ const addDoctorSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    
     investmentLastYear: {
       type: Number,
     },

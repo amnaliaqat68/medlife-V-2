@@ -218,8 +218,6 @@ export default function ProfileSettings() {
     }
   };
 
- 
-
   // 🔹 Save profile changes
   const handleSave = async () => {
     try {
@@ -242,10 +240,10 @@ export default function ProfileSettings() {
     }
   };
   useEffect(() => {
-    fetchActiveUsers();
+    
     fetchUserInfo();
-    const interval = setInterval(fetchActiveUsers, 30000);
-    return () => clearInterval(interval);
+    // const interval = setInterval(fetchActiveUsers, 30000);
+    // return () => clearInterval(interval);
   }, []);
   const hasRole = (roles) => roles.includes(role);
 
@@ -642,21 +640,8 @@ export default function ProfileSettings() {
           )}
         </div>
       </main>
-      
     </div>
   );
 }
 
 
-
-
- // // 🔹 Fetch active users
-  // const fetchActiveUsers = async () => {
-  //   try {
-  //     const res = await fetch("/api/auth/activeUser");
-  //     const data = await res.json();
-  //     if (res.ok) setActiveUsers(data.activeUsers);
-  //   } catch (err) {
-  //     console.error("Failed to fetch active users:", err);
-  //   }
-  // };

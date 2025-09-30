@@ -218,16 +218,7 @@ export default function ProfileSettings() {
     }
   };
 
-  // 🔹 Fetch active users
-  const fetchActiveUsers = async () => {
-    try {
-      const res = await fetch("/api/auth/activeUser");
-      const data = await res.json();
-      if (res.ok) setActiveUsers(data.activeUsers);
-    } catch (err) {
-      console.error("Failed to fetch active users:", err);
-    }
-  };
+ 
 
   // 🔹 Save profile changes
   const handleSave = async () => {
@@ -655,3 +646,17 @@ export default function ProfileSettings() {
     </div>
   );
 }
+
+
+
+
+ // // 🔹 Fetch active users
+  // const fetchActiveUsers = async () => {
+  //   try {
+  //     const res = await fetch("/api/auth/activeUser");
+  //     const data = await res.json();
+  //     if (res.ok) setActiveUsers(data.activeUsers);
+  //   } catch (err) {
+  //     console.error("Failed to fetch active users:", err);
+  //   }
+  // };

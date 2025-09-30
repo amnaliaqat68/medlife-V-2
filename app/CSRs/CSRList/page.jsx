@@ -1,4 +1,11 @@
 "use client";
+import dynamic from "next/dynamic";
+
+// Dynamically import the PDFViewer (client-only)
+const PDFViewer = dynamic(() => import("../PDFViewer"), {
+  ssr: false,
+});
+
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Search, CheckCircle, Loader2, FileText } from "lucide-react";
@@ -27,7 +34,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import { useReactToPrint } from "react-to-print";
 
 const CSRList = () => {
@@ -445,7 +451,7 @@ const CSRList = () => {
                 </p>
                 <p className="text-[12px]">
                   <strong>Activity Number:</strong>{" "}
-                  {selectedCSR. activityNumber || "N/A"}
+                  {selectedCSR.activityNumber || "N/A"}
                 </p>
                 <p className="text-[12px]">
                   <strong>Patients (M/E):</strong>{" "}
@@ -766,11 +772,6 @@ const CSRList = () => {
                                 Approved
                               </span>
                             </div>
-                            {/* {approverName && (
-                              <span className="text-[8px] text-gray-600">
-                                {approverName}
-                              </span>
-                            )} */}
                           </div>
                         )}
 
@@ -791,12 +792,18 @@ const CSRList = () => {
                 </h2>
 
                 {selectedCSR.filePath.endsWith(".pdf") ? (
-                  <iframe
-                    src={selectedCSR.filePath}
-                    title="Sales Report"
-                    className="w-full h-[500px] border"
-                  />
+                  // ✅ Download button for PDFs
+                  <a
+                    href={selectedCSR.filePath}
+                    download={`CSR-Attachment-${selectedCSR.csrNumber}.pdf`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md shadow inline-block"
+                  >
+                    Download PDF
+                  </a>
                 ) : (
+                  // ✅ Preview images directly
                   <img
                     src={selectedCSR.filePath}
                     alt="Attached Report"

@@ -31,9 +31,10 @@ export default function CSRForm({ doctorId }) {
     group: "",
     zone: "",
     contact: "",
+    activityNumber: "",
     patientsMorning: 0,
     patientsEvening: 0,
-  
+
     brick: "",
     products: [
       {
@@ -157,6 +158,9 @@ export default function CSRForm({ doctorId }) {
   const handleBusinessChange = (index, name, value) => {
     const updated = [...formData.Business];
     updated[index][name] = value;
+    const present = Number(updated[index].businessValuePresent) || 0;
+    const expected = Number(updated[index].businessValueExpected) || 0;
+    updated[index].businessValueAddition = expected - present;
     setFormData((prev) => ({ ...prev, Business: updated }));
   };
 
@@ -187,14 +191,12 @@ export default function CSRForm({ doctorId }) {
       chemists: prev.chemists.filter((_, i) => i !== index),
     }));
   };
-
   const addLedgerRow = () => {
     setFormData((prev) => ({
       ...prev,
-      ledgerSummary: [...prev.ledgerSummary, { month: "", sale: "" }],
+      ledgerSummary: [...prev.ledgerSummary, { month: "January", sale: 0 }],
     }));
   };
-
   const removeLedger = (index) => {
     setFormData((prev) => ({
       ...prev,
@@ -213,19 +215,23 @@ export default function CSRForm({ doctorId }) {
 
   const handleUpload = async (selectedFile) => {
     setUploading(true);
+
     const formData = new FormData();
     formData.append("file", selectedFile);
     formData.append("upload_preset", "Saas_preset");
 
     try {
+      // Default to auto (images/videos)
       let resourceType = "auto";
-      if (
-        selectedFile.type === "application/pdf" ||
-        selectedFile.type ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || // DOCX
-        selectedFile.type ===
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // XLSX
-      ) {
+
+      // If it's a document (pdf, docx, xlsx) → use raw
+      const docTypes = [
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // DOCX
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX
+      ];
+
+      if (docTypes.includes(selectedFile.type)) {
         resourceType = "raw";
       }
 
@@ -265,11 +271,23 @@ export default function CSRForm({ doctorId }) {
       });
 
       const data = await res.json();
+
       console.log("API Response:", data);
 
       if (res.ok) {
+        const numberRes = await fetch("/api/doctorsManage/getActivityNumber", {
+          credentials: "include",
+        });
+        const data = await numberRes.json();
+
+        if (doctorId && data[doctorId]) {
+          setFormData((prev) => ({
+            ...prev,
+            activityNumber: data[doctorId], // update UI
+          }));
+        }
         toast.success("CSR submitted successfully!");
-        resetForm();
+
         router.push("/dashboard");
       } else {
         toast.error(`Error submitting CSR: ${data.message || "Unknown error"}`);
@@ -279,6 +297,30 @@ export default function CSRForm({ doctorId }) {
       toast.error("Failed to submit form");
     }
   };
+  useEffect(() => {
+  const fetchNextActivityNumber = async () => {
+    if (!formData.doctorId) return;
+
+    try {
+      const res = await fetch("/api/doctorsManage/getActivityNumber", {
+        credentials: "include",
+      });
+      const data = await res.json();
+
+      if (data[formData.doctorId]) {
+        setFormData((prev) => ({
+          ...prev,
+          activityNumber: data[formData.doctorId],
+        }));
+      }
+    } catch (err) {
+      console.error("Failed to fetch activity number:", err);
+    }
+  };
+
+  fetchNextActivityNumber();
+}, [formData.doctorId]);
+
 
   const handleInputChange = (
     e,
@@ -299,65 +341,7 @@ export default function CSRForm({ doctorId }) {
     }
   };
 
-  const resetForm = () => {
-    setFormData({
-      filledBy: "",
-      groupOfFE: "",
-      doctorId: "",
-      drName: "",
-      drDesignation: "",
-      qualification: "",
-      speciality: "",
-      location: "",
-      address: "",
-      brick: "",
-      group: "",
-      zone: "",
-      contact: "",
-      patientsMorning: "",
-      patientsEvening: "",
-      activityNumber: 0,
-      brickName: "",
-      products: [
-        {
-          product: "",
-          strength: "",
-          presentUnits: "",
-          expectedUnits: "",
-          additionUnits: "",
-        },
-      ],
-      businessValuePresent: 0,
-      businessValueExpected: 0,
-      businessValueAddition: 0,
-      businessPeriod: "",
-      expectedTotalBusiness: "",
-      roi: "",
-      exactCost: "",
-      requiredDate: "",
-      itemRequested: "",
-      byHo: "",
-      investmentLastYear: "",
-
-      chemists: [
-        {
-          chemistName: "",
-          businessShare: "",
-          otherDoctors: "",
-        },
-      ],
-      investmentInstructions: "",
-      comments: "",
-      ledgerSummary: [
-        {
-          month: "",
-          sale: "",
-        },
-      ],
-    });
-    setFile(null);
-    setUploadedUrl("");
-  };
+ 
   useEffect(() => {
     const fetchReports = async () => {
       setLoading(true);
@@ -368,20 +352,6 @@ export default function CSRForm({ doctorId }) {
 
         const data = await res.json();
         console.log("Fetched CSR Reports:", data);
-        const doctorActivityMap = {};
-
-        data.forEach((csr) => {
-          if (!csr.doctorId) return;
-
-          if (!doctorActivityMap[csr.doctorId]) {
-            doctorActivityMap[csr.doctorId] = csr.activityNumber || 0;
-          } else {
-            doctorActivityMap[csr.doctorId] = Math.max(
-              doctorActivityMap[csr.doctorId],
-              csr.activityNumber || 0
-            );
-          }
-        });
 
         // 🔥 Transform each CSR to include total investment
         const updatedReports = data.map((csr) => {
@@ -396,9 +366,6 @@ export default function CSRForm({ doctorId }) {
                 totalInvestment: lastYear + cost, // new field
               },
             ],
-            activityNumber: csr.activityNumber || 0,
-            nextActivityNumber:
-            (doctorActivityMap[csr.doctorId] || 0) + 1
           };
         });
 
@@ -435,31 +402,7 @@ export default function CSRForm({ doctorId }) {
     };
     fetchDoctors();
   }, []);
-  useEffect(() => {
-  if (!formData.doctorId || report.length === 0) return;
-
-  // Get all CSRs for this doctor
-  const doctorReports = report.filter(
-    (r) => r.doctorId === formData.doctorId
-  );
-
-  if (doctorReports.length > 0) {
-    // Find the highest activityNumber and add 1
-    const maxActivity = Math.max(
-      ...doctorReports.map((r) => r.activityNumber || 0)
-    );
-    setFormData((prev) => ({
-      ...prev,
-      activityNumber: maxActivity + 1,
-    }));
-  } else {
-    // First CSR for this doctor
-    setFormData((prev) => ({
-      ...prev,
-      activityNumber: 1,
-    }));
-  }
-}, [formData.doctorId, report]);
+  
 
   return (
     <div className="bg-white overflow-hidden min-h-screen py-2 rounded-md">
@@ -1431,7 +1374,7 @@ export default function CSRForm({ doctorId }) {
                 {formData.ledgerSummary.map((ledger, index) => (
                   <tr key={index} className="hover:bg-gray-50 print:bg-white">
                     <td className="border rounded-md  px-4 py-2 print:border-black">
-                      <input
+                      <select
                         type="text"
                         value={ledger.month}
                         onChange={(e) =>
@@ -1439,7 +1382,27 @@ export default function CSRForm({ doctorId }) {
                         }
                         className="w-full px-2 py-1 border rounded focus:ring-2 focus:ring-blue-500 print:border-gray-400"
                         placeholder={`Month ${index + 1}`}
-                      />
+                      >
+                        {[
+                          "select month",
+                          "January",
+                          "February",
+                          "March",
+                          "April",
+                          "May",
+                          "June",
+                          "July",
+                          "August",
+                          "September",
+                          "October",
+                          "November",
+                          "December",
+                        ].map((month) => (
+                          <option key={month} value={month}>
+                            {month}
+                          </option>
+                        ))}
+                      </select>
                     </td>
                     <td className="border px-4 py-2 print:border-black">
                       <input

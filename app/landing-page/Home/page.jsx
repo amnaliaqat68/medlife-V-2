@@ -28,10 +28,13 @@ export default function HomePage() {
       if (response.status === 200) {
         const data = response.data;
         if (
-          ["superAdmin", "admin", "sm", "gm", "dsm"].includes(data.user.role)
+          ["admin", "sm", "gm", "dsm"].includes(data.user.role)
         ) {
-          router.push("/dashboard"); // ✅ one dashboard for all roles
-        } else {
+          router.push("/dashboard"); 
+        }
+         else if (data.user.role === "superAdmin") {
+  router.push("/Superadmin");
+}  else {
           setError("Unknown role. Please contact support.");
         }
       }

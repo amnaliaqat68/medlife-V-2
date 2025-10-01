@@ -355,7 +355,7 @@ function DashboardContent() {
               className="flex items-center w-full px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200"
               onClick={() => setOpen(!open)}
             >
-              <Settings className="w-4 h-4" /> Setting
+              <Settings className="w-4 h-4 mr-2.5" /> Setting
             </button>
             {open && (
               <div className="mt-2 p-4 bg-gray-50 border rounded-lg shadow-sm">

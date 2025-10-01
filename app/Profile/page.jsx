@@ -307,7 +307,7 @@ export default function ProfileSettings() {
                             Edit
                           </Button>
                           <Link
-                            href="/ForgotP"
+                            href="/forgot-password"
                             className="text-indigo-600 hover:underline text-sm font-medium"
                           >
                             Update Password?

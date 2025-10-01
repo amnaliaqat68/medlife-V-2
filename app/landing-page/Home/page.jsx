@@ -140,7 +140,7 @@ export default function HomePage() {
           <p className="text-center text-sm text-gray-600 mt-5">
            
             <Link
-              href="/ForgotP"
+              href="/forgot-password"
               className="text-teal-500 hover:text-teal-600 font-semibold"
             >
               Forget Password?{" "}

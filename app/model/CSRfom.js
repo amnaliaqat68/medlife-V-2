@@ -100,6 +100,7 @@ const CSRformschema = new mongoose.Schema(
     investmentInstructions: { type: String },
     comments: { type: String },
     filePath: { type: String },
+    executedFilePath: { type: String },
   },
   { timestamps: true }
 );

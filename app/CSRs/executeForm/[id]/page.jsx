@@ -56,7 +56,7 @@ export default function ExecuteCSRPage() {
     formData.append("particulars", particulars);
     formData.append("exactCost", activity);
     if (uploadedUrl) {
-      formData.append("fileUrl", uploadedUrl); // 👈 send Cloudinary URL
+      formData.append("fileUrl", uploadedUrl); 
     }
 
     try {
@@ -103,18 +103,31 @@ export default function ExecuteCSRPage() {
     fetchCSR();
   }, []);
 
-  const handleUpload = async (selectedFile) => {
+ const handleUpload = async (selectedFile) => {
     setUploading(true);
     const formData = new FormData();
     formData.append("file", selectedFile);
-    formData.append("upload_preset", "file_preset");
+    formData.append("upload_preset", "Saas_preset");
 
     try {
+      let resourceType = "auto";
+      const docTypes = [
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      ];
+
+      if (docTypes.includes(selectedFile.type)) {
+        resourceType = "raw";
+      }
+
       const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/det4apayu/auto/upload",
+        `https://api.cloudinary.com/v1_1/det4apayu/${resourceType}/upload`,
         formData
       );
-      setUploadedUrl(response.data.secure_url);
+
+      const fileUrl = response.data.secure_url;
+      setUploadedUrl(fileUrl);
       toast.success("File uploaded successfully!");
     } catch (error) {
       console.error("Upload failed", error);
@@ -123,6 +136,7 @@ export default function ExecuteCSRPage() {
       setUploading(false);
     }
   };
+
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 flex flex-col  p-4">
       <div className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-teal-800 rounded-2xl p-6 mb-6 overflow-hidden">
@@ -223,9 +237,9 @@ export default function ExecuteCSRPage() {
           />
         </div>
 
-        <section className="mt-6 print:hidden">
+        <section className="mt-6">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Attach Sales Report
+            Attach Execution File
           </label>
           <input
             type="file"
@@ -238,6 +252,12 @@ export default function ExecuteCSRPage() {
               handleUpload(selectedFile);
             }}
           />
+          {uploading && <p className="text-sm text-blue-600 mt-2">Uploading...</p>}
+          {uploadedUrl && (
+            <p className="text-sm text-green-600 mt-2">
+              ✅ File uploaded successfully
+            </p>
+          )}
         </section>
 
         <div className="pt-4">

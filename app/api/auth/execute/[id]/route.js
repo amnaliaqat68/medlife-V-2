@@ -25,7 +25,7 @@ export async function POST(req, { params }) {
       executeDate,
       particulars,
       "Business.0.exactCost": exactCost,
-      filePath: fileUrl,
+       executedFilePath: fileUrl, 
       adminStatus: "completed",
     },
     { new: true }

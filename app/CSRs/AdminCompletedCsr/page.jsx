@@ -265,6 +265,21 @@ const Completedpage = () => {
                     <strong> FE/MIO/SMIO:</strong>{" "}
                     {selectedCSR.filledBy || "N/A"}
                   </p>
+                  <p>
+                    <strong> Executed By:</strong>{" "}
+                    {selectedCSR.executedBy || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Execute Date: </strong>
+                    {selectedCSR.executeDate
+                      ? new Date(selectedCSR.executeDate).toLocaleDateString()
+                      : "N/A"}
+                  </p>
+                  <p>
+                    <strong> particulars: </strong>
+                    {selectedCSR.particulars || "N/A"}
+                  </p>
+
                   <p className="text-[12px]">
                     <strong>Doctor:</strong>{" "}
                     {selectedCSR.doctorId?.name || "N/A"}

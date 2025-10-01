@@ -10,12 +10,10 @@ export async function GET() {
 
       .populate("creatorId", "name district")
       .populate(
-        "doctorId",
-        "name speciality address brick district zone group designation qualification"
-      )
+        "doctorId")
       
       .lean();
-      // console.log("ReportCSR Data:", data);
+     console.log(data);
     return Response.json(data);
   } catch (error) {
     return new Response("Error fetching data", { status: 500 });

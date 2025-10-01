@@ -1,10 +1,5 @@
 "use client";
-import dynamic from "next/dynamic";
 
-// Dynamically import the PDFViewer (client-only)
-const PDFViewer = dynamic(() => import("../PDFViewer"), {
-  ssr: false,
-});
 
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -83,8 +78,12 @@ const CSRList = () => {
 
   const filteredCSRs = csrList.filter((csr) => {
     const name = csr.doctorId?.name?.toLowerCase() || "";
+    const district = csr.doctorId?.district?.toLowerCase() || "";
+    const address = csr.doctorId?.address?.toLowerCase() || "";
     const matchesSearch =
-      !searchTerm || name.includes(searchTerm.toLowerCase());
+      !searchTerm || name.includes(searchTerm.toLowerCase()) ||
+      district.includes(searchTerm.toLocaleLowerCase()) ||
+      address.includes(searchTerm.toLowerCase());
     const overallStatus = getOverallStatus(csr);
     const matchesStatus =
       statusFilter === "all" || overallStatus === statusFilter;
@@ -156,7 +155,7 @@ const CSRList = () => {
               <div className="flex items-center border-2 border-gray-200 rounded-lg px-3 py-2 bg-white focus-within:border-blue-500 transition-colors">
                 <Search className="w-4 h-4 text-gray-400 mr-2" />
                 <Input
-                  placeholder="Search by doctor, medicine, or district..."
+                  placeholder="Search by doctor, address, or district..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="border-none focus:ring-0 text-sm w-full sm:w-64 bg-transparent placeholder-gray-400"
@@ -196,10 +195,10 @@ const CSRList = () => {
                       District
                     </TableHead>
                     <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-56">
-                      Medicine
+                      Address
                     </TableHead>
                     <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-32 text-right">
-                      Active Cost
+                      Activity Cost
                     </TableHead>
                     <TableHead className="text-gray-700 font-semibold text-sm px-4 py-3 w-28 text-center">
                       Status
@@ -249,9 +248,17 @@ const CSRList = () => {
                           </span>
                         </div>
                       </TableCell>
+                      <TableCell className="px-4 py-3 w-32">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-400 rounded-full flex-shrink-0"></div>
+                          <span className="text-sm font-medium text-gray-700 truncate">
+                            {csr.doctorId?.address || "N/A"}
+                          </span>
+                        </div>
+                      </TableCell>
 
                       {/* Medicine */}
-                      <TableCell className="px-4 py-3 w-56">
+                      {/* <TableCell className="px-4 py-3 w-56">
                         {csr.products?.length > 0 ? (
                           <div className="space-y-1">
                             {csr.products.slice(0, 2).map((product, index) => (
@@ -275,7 +282,7 @@ const CSRList = () => {
                             No Products
                           </span>
                         )}
-                      </TableCell>
+                      </TableCell> */}
 
                       {/* Active Cost */}
                       <TableCell className="px-4 py-3 w-32 text-right">

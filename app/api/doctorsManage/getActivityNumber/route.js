@@ -39,3 +39,28 @@ export async function GET(req) {
     return new Response("Error fetching activity numbers", { status: 500 });
   }
 }
+
+
+ // useEffect(() => {
+  //   const fetchNextActivityNumber = async () => {
+  //     try {
+  //       const res = await fetch("/api/doctorsManage/getActivityNumber", {
+  //         credentials: "include",
+  //       });
+  //       const data = await res.json();
+
+  //       // Suppose you have doctorId available in your form
+  //       if (doctorId && data[doctorId]) {
+  //         setFormData((prev) => ({
+  //           ...prev,
+  //           activityNumber: data[doctorId],
+  //         }));
+  //       }
+
+  //     } catch (err) {
+  //       console.error("Failed to fetch activity number:", err);
+  //     }
+  //   };
+
+  //   if (doctorId) fetchNextActivityNumber();
+  // }, [doctorId]);

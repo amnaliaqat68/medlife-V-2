@@ -5,12 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Select from "react-select";
 import { useRouter } from "next/navigation";
 import SummaryPage from "../nationalSummary/page";
 import {
@@ -27,11 +27,13 @@ import Filterpage from "../fetFilter/page";
 
 const Reportpage = () => {
   const [name, setName] = useState("");
+  const [doctorId, setDoctorId] = useState("");
   const [district, setDistrict] = useState("");
   const [reports, setReports] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
   const [doctorList, setDoctorList] = useState([]);
   const router = useRouter();
 
@@ -96,29 +98,25 @@ const Reportpage = () => {
         </CardHeader>
         <CardContent className="p-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-8">
-          
             {/* Doctor Name */}
             <div className="space-y-3">
               <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
                 <User className="w-4 h-4 text-green-600" />
                 Healthcare Provider
               </Label>
-              <Select value={name} onValueChange={setName}>
-                <SelectTrigger className="border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 py-4">
-                  <SelectValue placeholder="Select doctor Name" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl border-2 border-gray-100 shadow-xl max-h-64 overflow-y-auto">
-                  {doctorList.map((doc) => (
-                    <SelectItem
-                      key={doc.value}
-                      value={doc.label} // use doc.label (doctor name)
-                      className="py-2 px-4 hover:bg-green-50 focus:bg-green-50"
-                    >
-                      {doc.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Select
+                options={doctorList}
+                value={doctorList.find((d) => d.value === name)}
+                onChange={(option) => setName(option.label)}
+                placeholder="Search doctor by name"
+                isSearchable
+                className="text-sm"
+                filterOption={(option, inputValue) =>
+                  option.label
+                    .toLowerCase()
+                    .includes(inputValue.toLowerCase().trim())
+                }
+              />
               <p className="text-xs text-gray-500">
                 Search or select by doctor's name
               </p>
@@ -130,55 +128,55 @@ const Reportpage = () => {
                 <MapPin className="w-4 h-4 text-green-600" />
                 Medical District
               </Label>
-              <Select value={district} onValueChange={setDistrict}>
-                <SelectTrigger className="border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 py-3">
-                  <SelectValue placeholder="Choose healthcare district" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl border-2 border-gray-100 shadow-xl">
-                  {[
-                    "Multan",
-                    "Faisalabad",
-                    "Karachi",
-                    "Lahore",
-                    "Abbottabad",
-                    "Sheikhupura",
-                    "Kasur",
-                    "DGK",
-                    "Jampur",
-                    "Layyah",
-                    "RYK",
-                    "BHP",
-                    "Khanewal",
-                    "Sargodha",
-                    "Chiniot",
-                    "Peshawar",
-                    "Charsadda",
-                    "Mardan",
-                    "Nowshera",
-                    "Swat",
-                    "Sahiwal",
-                    "Timergara",
-                    "Burewala",
-                    "Bhakkar",
-                    "Jhang",
-                    "Toba",
-                    "Gojra",
-                    "Gujranwala",
-                    "Sialkot",
-                  ].map((city) => (
-                    <SelectItem
-                      key={city.toLowerCase()}
-                      value={city.toLowerCase()}
-                      className="py-3 px-4 hover:bg-green-50 focus:bg-green-50"
-                    >
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                        {city}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Select
+                options={[
+                  "Multan",
+                  "Faisalabad",
+                  "Karachi",
+                  "Lahore",
+                  "Abbottabad",
+                  "Sheikhupura",
+                  "Kasur",
+                  "DGK",
+                  "Jampur",
+                  "Layyah",
+                  "RYK",
+                  "BHP",
+                  "Khanewal",
+                  "Sargodha",
+                  "Chiniot",
+                  "Peshawar",
+                  "Charsadda",
+                  "Mardan",
+                  "Nowshera",
+                  "Swat",
+                  "Sahiwal",
+                  "Timergara",
+                  "Burewala",
+                  "Bhakkar",
+                  "Jhang",
+                  "Toba",
+                  "Gojra",
+                  "Gujranwala",
+                  "Sialkot",
+                ].map((city) => ({
+                  value: city.toLowerCase(),
+                  label: city,
+                }))}
+                value={
+                  district
+                    ? {
+                        value: district,
+                        label:
+                          district.charAt(0).toUpperCase() + district.slice(1),
+                      }
+                    : null
+                }
+                onChange={(option) => setDistrict(option?.value || "")}
+                placeholder="Choose healthcare district"
+                isSearchable
+                className="text-sm"
+              />
               <p className="text-xs text-gray-500">
                 Select medical service area
               </p>

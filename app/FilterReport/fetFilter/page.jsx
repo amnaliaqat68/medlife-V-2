@@ -43,8 +43,12 @@ function FilterContent() {
     const worksheet = XLSX.utils.json_to_sheet(
       reports.map((csr, idx) => ({
         "Sr#": idx + 1,
-        "Execution Date": csr.executeDate
-          ? new Date(csr.executeDate).toLocaleDateString()
+        "Execution Date": csr.startDate
+          ? new Date(csr.startDate).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+            })
           : "N/A",
         "CSR-No.": csr?.csrNumber || "N/A",
         "Doctor's Name": csr.doctorId?.name || "N/A",
@@ -78,11 +82,10 @@ function FilterContent() {
     doc.setFontSize(12);
     doc.text("CSR Summary Report", 70, 15);
 
-    const now = new Date();
-    const monthYear = now.toLocaleString("default", {
-      month: "long",
-      year: "numeric",
-    });
+    const start = startDate ? new Date(startDate) : null;
+    const monthYear = start
+      ? start.toLocaleString("default", { month: "long", year: "numeric" })
+      : "N/A";
     doc.setFontSize(10);
     doc.text(`Month: ${monthYear}`, 150, 15);
 

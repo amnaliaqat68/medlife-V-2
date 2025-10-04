@@ -9,8 +9,7 @@ export async function GET(req) {
   const district = searchParams.get("district");
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
-  const name = searchParams.get("name"); 
-
+  const name = searchParams.get("name");
   let filter = { adminStatus: "completed" };
 
   if (startDate && endDate) {
@@ -21,26 +20,30 @@ export async function GET(req) {
   }
   try {
     // First, get all data with populated doctorId
-    let data = await CSRfom.find(filter).lean().populate({
-      path: "doctorId",
-      select: "name speciality address brick district zone group",
-    });
+    let data = await CSRfom.find(filter)
+      .lean()
+      .populate({
+        path: "doctorId",
+        select:
+          "name speciality address brick qualification designation district zone group",
+      })
+      .populate({
+        path: "creatorId",
+        select: "name  district ",
+      });
 
     console.log("Total records found:", data.length);
     console.log(
       "Sample doctor districts:",
       data.slice(0, 5).map((d) => d.doctorId?.district)
     );
-     if (name) {
-      data = data.filter(
-        (item) =>
-          item.doctorId &&
-          item.doctorId.name &&
-          item.doctorId.name.toLowerCase().includes(name.toLowerCase())
-      );
-      console.log("After name filter:", data.length, "records");
-    }
-
+    if (name) {
+  const regex = new RegExp(name.trim(), "i"); // ✅ partial, case-insensitive match
+  data = data.filter(
+    (item) => item.doctorId && regex.test(item.doctorId.name.trim())
+  );
+  console.log("After name filter:", data.length, "records");
+}
 
     if (district) {
       data = data.filter(
@@ -51,7 +54,7 @@ export async function GET(req) {
       );
       console.log("After district filter:", data.length, "records");
     }
-   
+
     return NextResponse.json(data);
   } catch (error) {
     console.error(error);

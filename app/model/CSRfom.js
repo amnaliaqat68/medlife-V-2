@@ -88,6 +88,8 @@ const CSRformschema = new mongoose.Schema(
       sm: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
       gm: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
     },
+    submittedDate: { type: Date, default: Date.now},
+    approvedDate: { sm:{type: Date}, gm:{type:Date}},
 
     groupOfFE: { type: String },
     patientsMorning: { type: Number },

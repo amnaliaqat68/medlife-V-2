@@ -18,23 +18,6 @@ const SummaryPage = ({ data = [] }) => {
     documentTitle: selectedCSR ? `CSR-${selectedCSR.csrNumber}` : "CSR-Form",
   });
 
-  useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const res = await fetch("/api/csrInfo/getreportsCSR", {
-          credentials: "include",
-        });
-
-        const data = await res.json();
-        console.log("Fetched CSR Reports:", data);
-        setReports(data);
-      } catch (err) {
-        console.error("Fetch failed", err);
-      }
-    };
-    fetchReports();
-  }, []);
-
   return (
     <div className="overflow-x-auto  m-2 mt-4 bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50">
       <table className="min-w-full table-auto   border border-gray-400 items-center text-center">
@@ -66,12 +49,16 @@ const SummaryPage = ({ data = [] }) => {
           </tr>
         </thead>
         <tbody>
-          {reports.slice(0, visibleRows).map((csr, idx) => (
+          {data.slice(0, visibleRows).map((csr, idx) => (
             <tr key={idx} className="text-[12px] hover:bg-gray-50">
               <td className="px-2 py-2 border border-gray-300">{idx + 1}</td>
               <td className="px-2 py-2 border border-gray-300">
                 {csr.executeDate
-                  ? new Date(csr.executeDate).toLocaleDateString()
+                  ? new Date(csr.executeDate).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })
                   : "N/A"}
               </td>
               <td
@@ -124,11 +111,17 @@ const SummaryPage = ({ data = [] }) => {
                       View Execution File
                     </a>
                   ) : (
-                    <img
-                      src={csr.executedFilePath}
-                      alt="Execution Attachment"
-                      className="h-10 w-10 object-cover rounded-md mx-auto"
-                    />
+                    <a
+                      href={csr.executedFilePath}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        src={csr.executedFilePath}
+                        alt="Execution Attachment"
+                        className="h-10 w-10 object-cover rounded-md mx-auto cursor-pointer hover:opacity-80 transition"
+                      />
+                    </a>
                   )
                 ) : (
                   <span className="text-gray-400 text-xs italic block">
@@ -250,7 +243,14 @@ const SummaryPage = ({ data = [] }) => {
                 <p>
                   <strong>Execute Date: </strong>
                   {selectedCSR.executeDate
-                    ? new Date(selectedCSR.executeDate).toLocaleDateString()
+                    ? new Date(selectedCSR.executeDate).toLocaleDateString(
+                        "en-GB",
+                        {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        }
+                      )
                     : "N/A"}
                 </p>
                 <p>

@@ -265,20 +265,6 @@ const Completedpage = () => {
                     <strong> FE/MIO/SMIO:</strong>{" "}
                     {selectedCSR.filledBy || "N/A"}
                   </p>
-                  <p>
-                    <strong> Executed By:</strong>{" "}
-                    {selectedCSR.executedBy || "N/A"}
-                  </p>
-                  <p>
-                    <strong>Execute Date: </strong>
-                    {selectedCSR.executeDate
-                      ? new Date(selectedCSR.executeDate).toLocaleDateString()
-                      : "N/A"}
-                  </p>
-                  <p>
-                    <strong> particulars: </strong>
-                    {selectedCSR.particulars || "N/A"}
-                  </p>
 
                   <p className="text-[12px]">
                     <strong>Doctor:</strong>{" "}
@@ -322,6 +308,19 @@ const Completedpage = () => {
                     {selectedCSR.patientsMorning || 0} /{" "}
                     {selectedCSR.patientsEvening || 0}
                   </p>
+                  <p className="text-[12px]">
+                  <strong>Submitted By:</strong>
+                  {selectedCSR.createdAt
+                    ? new Date(selectedCSR.createdAt).toLocaleDateString(
+                        "en-GB",
+                        {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        }
+                      )
+                    : "N/A"}
+                </p>
                 </div>
 
                 {/* Products */}
@@ -441,7 +440,11 @@ const Completedpage = () => {
                           <tr>
                             <td className="border px-2 py-1">Exact Cost</td>
                             <td className="border px-2 py-1">
-                              {selectedCSR.Business[0].exactCost || "N/A"}
+                              {selectedCSR.Business?.[0]?.exactCost
+                                ? Number(
+                                    selectedCSR.Business[0].exactCost
+                                  ).toLocaleString("en-PK")
+                                : "N/A"}
                             </td>
                           </tr>
                           <tr>
@@ -485,8 +488,12 @@ const Completedpage = () => {
                               Expected Total Business
                             </td>
                             <td className="border px-2 py-1">
-                              {selectedCSR.Business[0].expectedTotalBusiness ||
-                                "N/A"}
+                    
+                                {selectedCSR.Business?.[0]?.expectedTotalBusiness
+                                ? Number(
+                                    selectedCSR.Business[0].expectedTotalBusiness
+                                  ).toLocaleString("en-PK")
+                                : "N/A"}
                             </td>
                           </tr>
                           <tr>
@@ -502,8 +509,10 @@ const Completedpage = () => {
                               Investment Last Year
                             </td>
                             <td className="border px-2 py-1">
-                              {selectedCSR.Business[0].investmentLastYear ||
+                              {selectedCSR.Business[0].investmentLastYear ?
+                              Number(selectedCSR.Business[0].investmentLastYear).toLocaleString("en-pk"):
                                 "N/A"}
+                                
                             </td>
                           </tr>
                         </tbody>
@@ -584,13 +593,13 @@ const Completedpage = () => {
                                   {first?.month || ""}
                                 </td>
                                 <td className="border px-1 py-1">
-                                  {first?.sale || "N/A"}
+                                  {first?.sale ? Number(first?.sale).toLocaleString("en-pk"): "N/A"}
                                 </td>
                                 <td className="border px-1 py-1">
                                   {second?.month || ""}
                                 </td>
                                 <td className="border px-1 py-1">
-                                  {second?.sale || "N/A"}
+                                  {second?.sale ? Number(second?.sale).toLocaleString("en-pk"): "N/A"}
                                 </td>
                               </tr>
                             );

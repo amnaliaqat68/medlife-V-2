@@ -1,6 +1,5 @@
 "use client";
 
-
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Search, CheckCircle, Loader2, FileText } from "lucide-react";
@@ -81,7 +80,8 @@ const CSRList = () => {
     const district = csr.doctorId?.district?.toLowerCase() || "";
     const address = csr.doctorId?.address?.toLowerCase() || "";
     const matchesSearch =
-      !searchTerm || name.includes(searchTerm.toLowerCase()) ||
+      !searchTerm ||
+      name.includes(searchTerm.toLowerCase()) ||
       district.includes(searchTerm.toLocaleLowerCase()) ||
       address.includes(searchTerm.toLowerCase());
     const overallStatus = getOverallStatus(csr);
@@ -257,33 +257,6 @@ const CSRList = () => {
                         </div>
                       </TableCell>
 
-                      {/* Medicine */}
-                      {/* <TableCell className="px-4 py-3 w-56">
-                        {csr.products?.length > 0 ? (
-                          <div className="space-y-1">
-                            {csr.products.slice(0, 2).map((product, index) => (
-                              <div
-                                key={index}
-                                className="inline-flex items-center bg-blue-50 text-blue-700 px-2 py-1 rounded-md mr-1 mb-1"
-                              >
-                                <span className="text-xs font-medium truncate max-w-32">
-                                  {product.product}
-                                </span>
-                              </div>
-                            ))}
-                            {csr.products.length > 2 && (
-                              <div className="text-xs text-gray-500 font-medium">
-                                +{csr.products.length - 2} more
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <span className="text-sm text-gray-400 italic">
-                            No Products
-                          </span>
-                        )}
-                      </TableCell> */}
-
                       {/* Active Cost */}
                       <TableCell className="px-4 py-3 w-32 text-right">
                         <div>
@@ -414,7 +387,7 @@ const CSRList = () => {
                 </div>
               </div>
 
-              <div className="grid print:ml-4 print:mr-4 md:grid-cols-3 gap-2 border print:grid-cols-3 rounded-lg p-2 shadow-sm">
+              <div className="grid print:mx-auto print:w-[700px]  md:grid-cols-3 gap-2 border print:grid-cols-3 rounded-lg p-2 shadow-sm">
                 <p className="text-[12px]">
                   <strong>Submitted By:</strong>{" "}
                   {selectedCSR.creatorId?.name || "N/A"}
@@ -464,6 +437,19 @@ const CSRList = () => {
                   <strong>Patients (M/E):</strong>{" "}
                   {selectedCSR.patientsMorning || 0} /{" "}
                   {selectedCSR.patientsEvening || 0}
+                </p>
+                <p className="text-[12px]">
+                  <strong>Submitted By:</strong>
+                  {selectedCSR.createdAt
+                    ? new Date(selectedCSR.createdAt).toLocaleDateString(
+                        "en-GB",
+                        {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        }
+                      )
+                    : "N/A"}
                 </p>
               </div>
 
@@ -579,7 +565,11 @@ const CSRList = () => {
                         <tr>
                           <td className="border px-2 py-1">Exact Cost</td>
                           <td className="border px-2 py-1">
-                            {selectedCSR.Business[0].exactCost || "N/A"}
+                            {selectedCSR.Business?.[0]?.exactCost
+                              ? Number(
+                                  selectedCSR.Business[0].exactCost
+                                ).toLocaleString("en-PK")
+                              : "N/A"}
                           </td>
                         </tr>
                         <tr>
@@ -621,8 +611,11 @@ const CSRList = () => {
                             Expected Total Business
                           </td>
                           <td className="border px-2 py-1">
-                            {selectedCSR.Business[0].expectedTotalBusiness ||
-                              "N/A"}
+                            {selectedCSR.Business?.[0]?.expectedTotalBusiness
+                              ? Number(
+                                  selectedCSR.Business[0].expectedTotalBusiness
+                                ).toLocaleString("en-PK")
+                              : "N/A"}
                           </td>
                         </tr>
                         <tr>
@@ -636,8 +629,11 @@ const CSRList = () => {
                             Investment Last Year
                           </td>
                           <td className="border px-2 py-1">
-                            {selectedCSR.Business[0].investmentLastYear ||
-                              "N/A"}
+                            {selectedCSR.Business[0].investmentLastYear
+                              ? Number(
+                                  selectedCSR.Business[0].investmentLastYear
+                                ).toLocaleString("en-pk")
+                              : "N/A"}
                           </td>
                         </tr>
                       </tbody>
@@ -718,13 +714,17 @@ const CSRList = () => {
                                 {first?.month || ""}
                               </td>
                               <td className="border px-1 py-1">
-                                {first?.sale || "N/A"}
+                                {first?.sale
+                                  ? Number(first?.sale).toLocaleString("en-pk")
+                                  : "N/A"}
                               </td>
                               <td className="border px-1 py-1">
                                 {second?.month || ""}
                               </td>
                               <td className="border px-1 py-1">
-                                {second?.sale || "N/A"}
+                                {second?.sale
+                                  ? Number(second?.sale).toLocaleString("en-pk")
+                                  : "N/A"}
                               </td>
                             </tr>
                           );
@@ -736,10 +736,7 @@ const CSRList = () => {
               )}
 
               {/* Instructions & Comments */}
-              <section className="border-t pt-4">
-                <h2 className="text-center font-semibold text-gray-800 mb-2">
-                  Instructions & Comments
-                </h2>
+              <section className="border-t pt-4 flex">
                 <p className="ml-7">
                   <strong>Investment Instructions:</strong>{" "}
                   {selectedCSR.investmentInstructions || "N/A"}
@@ -750,7 +747,7 @@ const CSRList = () => {
               </section>
 
               {/* Approval Signatures */}
-              <section className=" print:ml-4 mt-3">
+              <section className=" print:ml-4 mt-1">
                 <h2 className="font-semibold text-gray-800 mb-2">Approvals</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 print:grid-cols-4 text-center">
                   {["sm", "gm", "pm", "md"].map((role) => {
@@ -791,6 +788,29 @@ const CSRList = () => {
                   })}
                 </div>
               </section>
+              {selectedCSR.filePath && (
+                <div
+                  className="hidden print:block mt-4"
+                  style={{ pageBreakBefore: "always" }}
+                >
+                  <h2 className="font-semibold text-sm mb-2">
+                    Attached Sales Report
+                  </h2>
+
+                  {selectedCSR.filePath.endsWith(".pdf") ? (
+                    <p className="text-gray-600 text-xs">
+                      Please see the attached PDF file:{" "}
+                      {`CSR-Attachment-${selectedCSR.csrNumber}.pdf`}
+                    </p>
+                  ) : (
+                    <img
+                      src={selectedCSR.filePath}
+                      alt="Attached Report"
+                      className="max-h-[1000px] w-auto border mx-auto"
+                    />
+                  )}
+                </div>
+              )}
             </div>
             {selectedCSR.filePath && (
               <div className="mt-4">

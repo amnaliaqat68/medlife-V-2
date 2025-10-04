@@ -20,6 +20,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import AddUserpage from "../addUsers/page";
+import {toast} from "react-toastify";
 
 const Createuserpage = () => {
   const [userRole, setUserRole] = useState("Admin");
@@ -71,7 +72,7 @@ const Createuserpage = () => {
     });
     const data = await res.json();
     if (data.success) {
-      alert("User deleted!");
+      toast.success("User deleted successfully!");
       setUsers((prev) => prev.filter((u) => u._id !== id));
     }
   };

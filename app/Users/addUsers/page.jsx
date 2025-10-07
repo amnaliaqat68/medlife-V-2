@@ -265,7 +265,7 @@ export default function AddUserpage({ user, onSuccess }) {
                 form.district.includes(opt.value)
               )}
               onChange={(selected) => {
-                if (selected.length <= 9) {
+                if (selected.length <= 15) {
                   setForm({ ...form, district: selected.map((s) => s.value) });
                 }
               }}

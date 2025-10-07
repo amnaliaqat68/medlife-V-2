@@ -309,7 +309,7 @@ const Completedpage = () => {
                     {selectedCSR.patientsEvening || 0}
                   </p>
                   <p className="text-[12px]">
-                  <strong>Submitted By:</strong>
+                  <strong>Submitted Date:</strong>
                   {selectedCSR.createdAt
                     ? new Date(selectedCSR.createdAt).toLocaleDateString(
                         "en-GB",
@@ -674,6 +674,29 @@ const Completedpage = () => {
                     })}
                   </div>
                 </section>
+                {selectedCSR.filePath && (
+                  <div
+                    className="hidden print:block mt-4"
+                    style={{ pageBreakBefore: "always" }}
+                  >
+                    <h2 className="font-semibold text-sm mb-2">
+                      Attached Sales Report
+                    </h2>
+
+                    {selectedCSR.filePath.endsWith(".pdf") ? (
+                      <p className="text-gray-600 text-xs">
+                        Please see the attached PDF file:{" "}
+                        {`CSR-Attachment-${selectedCSR.csrNumber}.pdf`}
+                      </p>
+                    ) : (
+                      <img
+                        src={selectedCSR.filePath}
+                        alt="Attached Report"
+                        className="max-h-[1000px] w-auto border mx-auto"
+                      />
+                    )}
+                  </div>
+                )}
               </div>
               {selectedCSR.filePath && (
                 <div className="mt-4">

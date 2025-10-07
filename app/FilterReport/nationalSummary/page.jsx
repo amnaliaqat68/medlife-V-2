@@ -571,9 +571,6 @@ const SummaryPage = ({ data = [] }) => {
 
               {/* Instructions & Comments */}
               <section className="border-t pt-4">
-                <h2 className="text-center font-semibold text-gray-800 mb-2">
-                  Instructions & Comments
-                </h2>
                 <p className="ml-7">
                   <strong>Investment Instructions:</strong>{" "}
                   {selectedCSR.investmentInstructions || "N/A"}

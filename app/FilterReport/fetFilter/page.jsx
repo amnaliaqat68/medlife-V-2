@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import SummaryPage from "../nationalSummary/page";
 import { Button } from "@/components/ui/button";
-import { LogOut, FileSpreadsheet, FileText } from "lucide-react";
+import { LogOut, FileSpreadsheet, FileText, Menu } from "lucide-react";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -12,6 +12,7 @@ import autoTable from "jspdf-autotable";
 // ✅ Inner component that uses useSearchParams
 function FilterContent() {
   const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
   const searchParams = useSearchParams();
   const district = searchParams.get("district") || "";
   const startDate = searchParams.get("startDate") || "";
@@ -176,7 +177,7 @@ function FilterContent() {
 
         {/* Center: Page Title */}
         <div className="absolute left-1/2 transform -translate-x-1/2">
-          <p className="text-lg sm:text-2xl font-bold text-indigo-900">
+          <p className="text-sm sm:text-lg lg:text-2xl font-bold text-indigo-900">
             National Summary Report
           </p>
         </div>
@@ -205,7 +206,42 @@ function FilterContent() {
             Logout
           </Button>
         </div>
+        <div className="md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-indigo-900"
+          >
+            <Menu className="h-6 w-6" />
+          </Button>
+        </div>
       </header>
+      {menuOpen && (
+        <div className="flex  items-stretch bg-white border-b border-gray-200 shadow-md md:hidden animate-slide-down">
+          <Button
+            onClick={exportToExcel}
+            className="m-2 bg-green-600 hover:bg-green-700 text-white flex items-center justify-center"
+          >
+            <FileSpreadsheet className="h-3 w-3 mr-2" />
+             Excel
+          </Button>
+          <Button
+            onClick={exportToPDF}
+            className="m-2 bg-red-600 hover:bg-red-700 text-white flex items-center justify-center"
+          >
+            <FileText className="h-3 w-3 mr-2" />
+           PDF
+          </Button>
+          <Button
+            onClick={handleLogout}
+            className="m-2 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center"
+          >
+            <LogOut className="h-3 w-3 mr-2" />
+            Logout
+          </Button>
+        </div>
+      )}
 
       {loading ? (
         <p>Loading...</p>

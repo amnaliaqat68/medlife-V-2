@@ -381,18 +381,18 @@ const DecisionPage = () => {
                     {selectedCSR.patientsEvening || 0}
                   </p>
                   <p className="text-[12px]">
-                  <strong>Submitted Date:</strong>
-                  {selectedCSR.createdAt
-                    ? new Date(selectedCSR.createdAt).toLocaleDateString(
-                        "en-GB",
-                        {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        }
-                      )
-                    : "N/A"}
-                </p>
+                    <strong>Submitted Date:</strong>
+                    {selectedCSR.createdAt
+                      ? new Date(selectedCSR.createdAt).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          }
+                        )
+                      : "N/A"}
+                  </p>
                 </div>
 
                 {/* Products */}
@@ -512,11 +512,11 @@ const DecisionPage = () => {
                           <tr>
                             <td className="border px-2 py-1">Exact Cost</td>
                             <td className="border px-2 py-1">
-                               {selectedCSR.Business?.[0]?.exactCost
-                              ? Number(
-                                  selectedCSR.Business[0].exactCost
-                                ).toLocaleString("en-PK")
-                              : "N/A"}
+                              {selectedCSR.Business?.[0]?.exactCost
+                                ? Number(
+                                    selectedCSR.Business[0].exactCost
+                                  ).toLocaleString("en-PK")
+                                : "N/A"}
                             </td>
                           </tr>
                           <tr>
@@ -560,11 +560,12 @@ const DecisionPage = () => {
                               Expected Total Business
                             </td>
                             <td className="border px-2 py-1">
-                             {selectedCSR.Business?.[0]?.expectedTotalBusiness
-                              ? Number(
-                                  selectedCSR.Business[0].expectedTotalBusiness
-                                ).toLocaleString("en-PK")
-                              : "N/A"}
+                              {selectedCSR.Business?.[0]?.expectedTotalBusiness
+                                ? Number(
+                                    selectedCSR.Business[0]
+                                      .expectedTotalBusiness
+                                  ).toLocaleString("en-PK")
+                                : "N/A"}
                             </td>
                           </tr>
                           <tr>
@@ -580,11 +581,11 @@ const DecisionPage = () => {
                               Investment Last Year
                             </td>
                             <td className="border px-2 py-1">
-                               {selectedCSR.Business[0].investmentLastYear
-                              ? Number(
-                                  selectedCSR.Business[0].investmentLastYear
-                                ).toLocaleString("en-pk")
-                              : "N/A"}
+                              {selectedCSR.Business[0].investmentLastYear
+                                ? Number(
+                                    selectedCSR.Business[0].investmentLastYear
+                                  ).toLocaleString("en-pk")
+                                : "N/A"}
                             </td>
                           </tr>
                         </tbody>
@@ -749,30 +750,29 @@ const DecisionPage = () => {
                     })}
                   </div>
                 </section>
-                 {selectedCSR.filePath && (
-                <div
-                  className="hidden print:block mt-4"
-                  style={{ pageBreakBefore: "always" }}
-                >
-                  <h2 className="font-semibold text-sm mb-2">
-                    Attached Sales Report
-                  </h2>
+                {selectedCSR.filePath && (
+                  <div
+                    className="hidden print:block mt-4"
+                    style={{ pageBreakBefore: "always" }}
+                  >
+                    <h2 className="font-semibold text-sm mb-2">
+                      Attached Sales Report
+                    </h2>
 
-                  {selectedCSR.filePath.endsWith(".pdf") ? (
-                    <p className="text-gray-600 text-xs">
-                      Please see the attached PDF file:{" "}
-                      {`CSR-Attachment-${selectedCSR.csrNumber}.pdf`}
-                    </p>
-                  ) : (
-                    <img
-                      src={selectedCSR.filePath}
-                      alt="Attached Report"
-                      className="max-h-[1000px] w-auto border mx-auto"
-                    />
-                  )}
-                </div>
-              )}
-                
+                    {selectedCSR.filePath.endsWith(".pdf") ? (
+                      <p className="text-gray-600 text-xs">
+                        Please see the attached PDF file:{" "}
+                        {`CSR-Attachment-${selectedCSR.csrNumber}.pdf`}
+                      </p>
+                    ) : (
+                      <img
+                        src={selectedCSR.filePath}
+                        alt="Attached Report"
+                        className="max-h-[1000px] w-auto border mx-auto"
+                      />
+                    )}
+                  </div>
+                )}
               </div>
               {selectedCSR.filePath && (
                 <div className="mt-4">

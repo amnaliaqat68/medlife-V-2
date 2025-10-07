@@ -439,7 +439,7 @@ const CSRList = () => {
                   {selectedCSR.patientsEvening || 0}
                 </p>
                 <p className="text-[12px]">
-                  <strong>Submitted By:</strong>
+                  <strong>Submitted Date:</strong>
                   {selectedCSR.createdAt
                     ? new Date(selectedCSR.createdAt).toLocaleDateString(
                         "en-GB",

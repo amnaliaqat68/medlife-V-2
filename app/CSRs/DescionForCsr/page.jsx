@@ -325,7 +325,7 @@ const DecisionPage = () => {
                   </div>
                 </div>
 
-                <div className="grid print:ml-4 print:mx-auto print:w-[700px] print:mr-4 md:grid-cols-3 gap-2 border print:grid-cols-3 rounded-lg p-2 shadow-sm">
+                <div className="grid print:mx-auto print:w-[700px] md:grid-cols-3 gap-2 border print:grid-cols-3 rounded-lg p-2 shadow-sm">
                   <p className="text-[12px]">
                     <strong>Submitted By:</strong>{" "}
                     {selectedCSR.creatorId?.name || "N/A"}

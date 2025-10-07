@@ -530,10 +530,14 @@ const Approvedpage = () => {
                           <td className="border px-2 py-1">
                             Expected Total Business
                           </td>
-                          <td className="border px-2 py-1">
-                            {selectedCSR.Business[0].expectedTotalBusiness ||
-                              "N/A"}
-                          </td>
+                           <td className="border px-2 py-1">
+                    
+                                {selectedCSR.Business?.[0]?.expectedTotalBusiness
+                                ? Number(
+                                    selectedCSR.Business[0].expectedTotalBusiness
+                                  ).toLocaleString("en-PK")
+                                : "N/A"}
+                            </td>
                         </tr>
                         <tr>
                           <td className="border px-2 py-1">Business Period</td>
@@ -545,10 +549,12 @@ const Approvedpage = () => {
                           <td className="border px-2 py-1">
                             Investment Last Year
                           </td>
-                          <td className="border px-2 py-1">
-                            {selectedCSR.Business[0].investmentLastYear ||
-                              "N/A"}
-                          </td>
+                           <td className="border px-2 py-1">
+                              {selectedCSR.Business[0].investmentLastYear ?
+                              Number(selectedCSR.Business[0].investmentLastYear).toLocaleString("en-pk"):
+                                "N/A"}
+                                
+                            </td>
                         </tr>
                       </tbody>
                     </table>

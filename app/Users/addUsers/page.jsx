@@ -256,7 +256,7 @@ export default function AddUserpage({ user, onSuccess }) {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Area (upto All)
+              Area (All)
             </label>
             <Select
               options={areaOptions}
@@ -265,7 +265,7 @@ export default function AddUserpage({ user, onSuccess }) {
                 form.district.includes(opt.value)
               )}
               onChange={(selected) => {
-                if (selected.length <= 15) {
+                if (selected.length <= 35) {
                   setForm({ ...form, district: selected.map((s) => s.value) });
                 }
               }}

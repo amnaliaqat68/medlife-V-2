@@ -44,11 +44,12 @@ export async function GET() {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const user = await User.findById(decoded.userId).select("-password");
 
     // ✅ Update last active timestamp
     await User.findByIdAndUpdate(decoded.id, { lastActive: new Date() });
 
-    return Response.json({ user: decoded });
+    return Response.json({ user });
   } catch (err) {
     console.error("JWT error:", err);
     return Response.json({ error: "Invalid token" }, { status: 401 });

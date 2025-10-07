@@ -57,114 +57,6 @@ export default function ProfileSettings() {
     district: "",
   });
 
-  // const fetchAllData = async () => {
-  //   setLoading(true);
-
-  //   try {
-  //     // Fetch user info first
-  //     setLoadingStates((prev) => ({ ...prev, user: true }));
-  //     const userRes = await fetch("/api/auth/userinfo");
-  //     const userData = await userRes.json();
-
-  //     if (userRes.ok) {
-  //       setUser(userData.user);
-  //       setRole(userData.user?.role);
-  //       setLoadingStates((prev) => ({ ...prev, user: false }));
-
-  //       const userRole = userData.user?.role;
-
-  //       // Parallel fetch of other data based on role
-  //       const promises = [];
-
-  //       // Fetch reports
-  //       setLoadingStates((prev) => ({ ...prev, reports: true }));
-  //       promises.push(
-  //         fetch("/api/csrInfo/getreportsCSR", { credentials: "include" })
-  //           .then((res) => res.json())
-  //           .then((data) => {
-  //             setCompleted(data);
-  //             setLoadingStates((prev) => ({ ...prev, reports: false }));
-  //           })
-  //           .catch((err) => {
-  //             console.error("Fetch reports failed", err);
-  //             setLoadingStates((prev) => ({ ...prev, reports: false }));
-  //           })
-  //       );
-
-  //       // Fetch CSRs based on role
-  //       setLoadingStates((prev) => ({ ...prev, csr: true }));
-  //       let csrEndpoint = "";
-  //       if (userRole === "sm") {
-  //         csrEndpoint = "/api/csrInfo/getCSR";
-  //       } else if (userRole === "gm") {
-  //         csrEndpoint = "/api/csrInfo/getGMCSR";
-  //       } else if (userRole === "admin") {
-  //         csrEndpoint = "/api/csrInfo/getadminCSR";
-  //       }
-
-  //       if (csrEndpoint) {
-  //         promises.push(
-  //           fetch(csrEndpoint)
-  //             .then((res) => res.json())
-  //             .then((data) => {
-  //               setTotalCSR(data);
-
-  //               const pendingCSR = data.filter((csr) => {
-  //                 if (userRole === "sm") return csr.smStatus === "pending";
-  //                 if (userRole === "gm") return csr.gmStatus === "pending";
-  //                 if (userRole === "admin")
-  //                   return csr.adminStatus === "pending";
-  //                 return false;
-  //               });
-  //               setPending(pendingCSR);
-  //               setLoadingStates((prev) => ({ ...prev, csr: false }));
-  //             })
-  //             .catch((err) => {
-  //               console.error("Error fetching CSR:", err);
-  //               setLoadingStates((prev) => ({ ...prev, csr: false }));
-  //             })
-  //         );
-  //       } else {
-  //         setLoadingStates((prev) => ({ ...prev, csr: false }));
-  //       }
-
-  //       // Fetch doctors
-  //       setLoadingStates((prev) => ({ ...prev, doctors: true }));
-  //       promises.push(
-  //         fetch("/api/doctorsManage/getDoctors")
-  //           .then((res) => res.json())
-  //           .then((data) => {
-  //             if (data) setDoctors(data);
-  //             setLoadingStates((prev) => ({ ...prev, doctors: false }));
-  //           })
-  //           .catch((err) => {
-  //             console.error("Error fetching doctors:", err);
-  //             setLoadingStates((prev) => ({ ...prev, doctors: false }));
-  //           })
-  //       );
-
-  //       // Wait for all promises to complete
-  //       await Promise.all(promises);
-  //     } else {
-  //       setLoadingStates((prev) => ({ ...prev, user: false }));
-  //     }
-  //   } catch (err) {
-  //     console.error("Error fetching user:", err);
-  //     setLoadingStates((prev) => ({
-  //       user: false,
-  //       csr: false,
-  //       doctors: false,
-  //       reports: false,
-  //     }));
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchAllData();
-  // }, []);
-
   // 🔹 Fetch user info
   const fetchUserInfo = async () => {
     try {
@@ -285,8 +177,8 @@ export default function ProfileSettings() {
                         {[
                           { label: "Full Name", value: formData.name },
                           { label: "Email", value: formData.email },
-                          { label: "Phone", value: formData.phone || "—" },
-                          { label: "Address", value: formData.district || "—" },
+                          { label: "Phone", value: formData.phone },
+                          { label: "Address", value: formData.district },
                         ].map((field, idx) => (
                           <div
                             key={idx}

@@ -411,12 +411,12 @@ const SummaryPage = ({ data = [] }) => {
                         <tr>
                           <td className="border px-2 py-1">Exact Cost</td>
                           <td className="border px-2 py-1">
-                              {selectedCSR.Business?.[0]?.exactCost
-                                ? Number(
-                                    selectedCSR.Business[0].exactCost
-                                  ).toLocaleString("en-PK")
-                                : "N/A"}
-                            </td>
+                            {selectedCSR.Business?.[0]?.exactCost
+                              ? Number(
+                                  selectedCSR.Business[0].exactCost
+                                ).toLocaleString("en-PK")
+                              : "N/A"}
+                          </td>
                         </tr>
                         <tr>
                           <td className="border px-2 py-1">By HO</td>
@@ -457,13 +457,12 @@ const SummaryPage = ({ data = [] }) => {
                             Expected Total Business
                           </td>
                           <td className="border px-2 py-1">
-                    
-                                {selectedCSR.Business?.[0]?.expectedTotalBusiness
-                                ? Number(
-                                    selectedCSR.Business[0].expectedTotalBusiness
-                                  ).toLocaleString("en-PK")
-                                : "N/A"}
-                            </td>
+                            {selectedCSR.Business?.[0]?.expectedTotalBusiness
+                              ? Number(
+                                  selectedCSR.Business[0].expectedTotalBusiness
+                                ).toLocaleString("en-PK")
+                              : "N/A"}
+                          </td>
                         </tr>
                         <tr>
                           <td className="border px-2 py-1">Business Period</td>
@@ -475,15 +474,16 @@ const SummaryPage = ({ data = [] }) => {
                           <td className="border px-2 py-1">
                             Investment Last Year
                           </td>
-                         
+                          <td className="border px-2 py-1">
+                            {selectedCSR.Business[0].investmentLastYear
+                              ? Number(
+                                  selectedCSR.Business[0].investmentLastYear
+                                ).toLocaleString("en-pk")
+                              : "N/A"}
+                          </td>
                         </tr>
                       </tbody>
-                    </table><td className="border px-2 py-1">
-                              {selectedCSR.Business[0].investmentLastYear ?
-                              Number(selectedCSR.Business[0].investmentLastYear).toLocaleString("en-pk"):
-                                "N/A"}
-                                
-                            </td>
+                    </table>
                   </div>
                 </section>
               )}

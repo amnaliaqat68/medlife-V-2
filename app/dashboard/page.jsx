@@ -37,6 +37,7 @@ import Completedpage from "../CSRs/AdminCompletedCsr/page";
 import Approvedpage from "../CSRs/AdminApprovedCsr/page";
 import Reportpage from "../FilterReport/Reports/page";
 import ProfileSettings from "../Profile/page";
+import Inputpage from "../FilterReport/directInput/page";
 
 function DashboardContent() {
   const [open, setOpen] = useState(false);
@@ -346,6 +347,16 @@ function DashboardContent() {
                 }`}
               >
                 <FileText className="w-5 h-5" /> Users
+              </button>
+              <button
+                onClick={() => handleNav("directinput")}
+                className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg ${
+                  tab === "directinput"
+                    ? "bg-indigo-100 text-indigo-700 font-medium"
+                    : "hover:bg-indigo-50 text-gray-700"
+                }`}
+              >
+                <FileText className="w-5 h-5" /> Direct Input
               </button>
             </>
           )}
@@ -909,7 +920,7 @@ function DashboardContent() {
             <CSRList />
           )}
           {tab === "profile" && hasRole(["dsm", "sm", "gm", "admin"]) && (
-            <ProfileSettings/>
+            <ProfileSettings />
           )}
           {tab === "doctors" && hasRole(["dsm", "sm", "gm", "admin"]) && (
             <DoctorManagement />
@@ -920,6 +931,7 @@ function DashboardContent() {
           {tab === "completed" && role === "admin" && <Completedpage />}
           {tab === "reports" && role === "admin" && <Reportpage />}
           {tab === "createuser" && role === "admin" && <Createuserpage />}
+          {tab === "directinput" && role === "admin" && <Inputpage />}
         </div>
       </main>
     </div>
